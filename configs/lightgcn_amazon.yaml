@@ -1,0 +1,36 @@
+# LightGCN (纯CF) on RLMRec Amazon-book
+# =======================================
+# 纯协同过滤基线，与 lightgcn_llm_amazon.yaml 对照。
+# 除 model.name 外，其他配置完全相同，确保公平对比。
+#
+# 运行:
+#   python experiments/train_baseline.py --config configs/lightgcn_amazon.yaml
+
+experiment_name: lightgcn_amazon
+seed: 2024
+device: cuda
+output_dir: artifacts/lightgcn_amazon
+log_dir: logs/lightgcn_amazon
+
+data:
+  type: rlmrec
+  dataset: amazon
+  data_dir: data/rlmrec/amazon
+
+model:
+  name: LightGCN             # 纯CF基线
+  embedding_dim: 64
+  num_layers: 3
+
+training:
+  epochs: 200
+  batch_size: 2048
+  lr: 0.001
+  weight_decay: 0.0001
+  early_stop_patience: 20
+  log_interval: 10
+
+evaluation:
+  ks: [10, 20, 50]
+  valid_metric: "Recall@20"
+  eval_batch_size: 2048

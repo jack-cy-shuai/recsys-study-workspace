@@ -27,3 +27,10 @@ logs/
 saved_models/*.pt
 saved_models/*.pth
 !saved_models/.gitkeep
+
+# Claude Code internal
+.claude/
+
+# RLMRec raw data (large pickle files)
+data/rlmrec/
+data/google_data.zip

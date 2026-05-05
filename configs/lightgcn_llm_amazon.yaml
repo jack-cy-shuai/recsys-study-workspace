@@ -1,0 +1,42 @@
+# LightGCN-LLM on RLMRec Amazon-book
+# =======================================
+# 在 LightGCN 中融合预计算的 LLM 语义 embedding（相加融合），
+# 与纯 LightGCN 对比，验证 LLM 语义信息的有效性。
+#
+# 对照实验：
+#   1. LightGCN (纯CF): 使用 configs/lightgcn_llm_amazon.yaml 并 --override model.name=LightGCN
+#   2. LightGCN-LLM:     使用本配置文件，默认 model.name=LightGCN_LLM
+
+experiment_name: lightgcn_llm_amazon
+seed: 2024
+device: cuda
+output_dir: artifacts/lightgcn_llm_amazon
+log_dir: logs/lightgcn_llm_amazon
+
+# ── 数据：RLMRec Amazon-book ──
+data:
+  type: rlmrec              # 数据源类型：rlmrec (非 movielens)
+  dataset: amazon            # amazon / yelp / steam
+  data_dir: data/rlmrec/amazon  # 下载的 pickle 文件所在目录
+
+# ── 模型：LightGCN + LLM 融合 ──
+model:
+  name: LightGCN_LLM         # 可改为 LightGCN 做纯CF对比
+  embedding_dim: 64
+  num_layers: 3
+  freeze_llm: true            # 冻结 LLM embedding，仅训练投影层
+
+# ── 训练 ──
+training:
+  epochs: 200
+  batch_size: 2048
+  lr: 0.001
+  weight_decay: 0.0001
+  early_stop_patience: 20
+  log_interval: 10
+
+# ── 评估 ──
+evaluation:
+  ks: [10, 20, 50]
+  valid_metric: "Recall@20"   # 早停和选最优模型的指标
+  eval_batch_size: 2048       # 分批评估的批次大小 (Amazon 52万用户, 必须分批)

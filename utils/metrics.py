@@ -136,3 +136,84 @@ def evaluate_model(
     # 按用户数平均
     num_users = max(len(user_targets), 1)
     return {name: value / num_users for name, value in accumulators.items()}
+
+
+# ── 分批评估（用于大数据集）───────────────────────────────
+
+
+@torch.no_grad()
+def evaluate_model_batched(
+    model,
+    target_pairs: List[Tuple[int, int]],
+    train_user_items: Dict[int, set],
+    ks: Iterable[int],
+    eval_batch_size: int = 2048,
+) -> Dict[str, float]:
+    """分批评估——适用于用户数极大的数据集（如 Amazon-book 52万用户）。
+
+    与 evaluate_model 功能相同，但不一次性生成完整打分矩阵，
+    而是每批只计算一部分用户对全部物品的分数。
+
+    Parameters
+    ----------
+    model : BaseRecommender
+        模型实例，需要有 predict_for_users() 方法。
+    target_pairs : list of (user, item)
+    train_user_items : dict
+    ks : iterable of int
+    eval_batch_size : int
+        每次评估的用户数。减小此值可降低显存占用。
+
+    Returns
+    -------
+    metrics : dict，与 evaluate_model 格式相同
+    """
+    ks = sorted(set(int(k) for k in ks))
+    max_k = ks[-1]
+
+    accumulators: Dict[str, float] = {}
+    for k in ks:
+        for prefix in ["Recall", "NDCG", "MRR", "Precision", "Hit"]:
+            accumulators[f"{prefix}@{k}"] = 0.0
+
+    # 按用户分组
+    user_targets: Dict[int, Set[int]] = {}
+    for user, item in target_pairs:
+        user_targets.setdefault(user, set()).add(item)
+
+    all_users = list(user_targets.keys())
+    device = model.device
+
+    for start in range(0, len(all_users), eval_batch_size):
+        batch_users = all_users[start:start + eval_batch_size]
+        batch_indices = torch.tensor(batch_users, dtype=torch.long, device=device)
+
+        # 只计算这批用户对全部物品的分数
+        batch_scores = model.predict_for_users(batch_indices)  # [B, M]
+
+        for j, user in enumerate(batch_users):
+            scores = batch_scores[j].clone()
+            true_items = user_targets[user]
+
+            # 屏蔽训练集已见物品
+            seen = train_user_items.get(user, set())
+            if seen:
+                seen_list = list(seen)
+                # 只屏蔽在评估批次内的 seen items（分批可能不全）
+                valid_seen = [i for i in seen_list if i < scores.shape[0]]
+                if valid_seen:
+                    seen_tensor = torch.tensor(valid_seen, device=device, dtype=torch.long)
+                    scores[seen_tensor] = -float("inf")
+
+            top_items = torch.topk(scores, k=max_k).indices.tolist()
+
+            for k in ks:
+                top_k = top_items[:k]
+                accumulators[f"Recall@{k}"] += recall_at_k(top_k, true_items)
+                accumulators[f"NDCG@{k}"] += ndcg_at_k(top_k, true_items)
+                accumulators[f"MRR@{k}"] += mrr_at_k(top_k, true_items)
+                accumulators[f"Precision@{k}"] += precision_at_k(top_k, true_items)
+                accumulators[f"Hit@{k}"] += hit_at_k(top_k, true_items)
+
+    num_users = max(len(user_targets), 1)
+    return {name: value / num_users for name, value in accumulators.items()}

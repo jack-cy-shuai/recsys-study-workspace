@@ -100,10 +100,33 @@ class BaseRecommender(nn.Module, ABC):
         Returns
         -------
         score_matrix : Tensor, shape [num_users, num_items]
+
+        Warning
+        -------
+        对于大数据集（如 Amazon-book: 526k × 91k），全量矩阵约 192GB。
+        此时应使用 predict_for_users() 分批评估。
         """
         user_emb = self.get_user_embeddings()
         item_emb = self.get_item_embeddings()
         return user_emb @ item_emb.t()
+
+    @torch.no_grad()
+    def predict_for_users(self, user_indices: torch.Tensor) -> torch.Tensor:
+        """为指定用户子集计算打分矩阵（用于分批评估）。
+
+        Parameters
+        ----------
+        user_indices : LongTensor, shape [batch_size]
+            目标用户的索引列表。
+
+        Returns
+        -------
+        scores : Tensor, shape [batch_size, num_items]
+            这批用户对所有物品的预测分数。
+        """
+        user_emb = self.get_user_embeddings()[user_indices]  # [B, d]
+        item_emb = self.get_item_embeddings()                 # [M, d]
+        return user_emb @ item_emb.t()                         # [B, M]
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
         """返回优化器实例。

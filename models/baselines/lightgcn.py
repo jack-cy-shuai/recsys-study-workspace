@@ -109,13 +109,21 @@ class LightGCN(BaseRecommender):
         return user_emb, item_emb
 
     def get_user_embeddings(self) -> torch.Tensor:
-        """获取最终的用户嵌入矩阵。使用缓存避免重复计算。"""
+        """获取最终的用户嵌入矩阵。
+
+        训练模式下每次重新计算（保证计算图正确），
+        eval 模式下使用缓存避免重复的图传播。
+        """
+        if self.training:
+            return self._propagate()[0]
         if self._cached_user_emb is None:
             self._cached_user_emb, self._cached_item_emb = self._propagate()
         return self._cached_user_emb
 
     def get_item_embeddings(self) -> torch.Tensor:
         """获取最终的物品嵌入矩阵。"""
+        if self.training:
+            return self._propagate()[1]
         if self._cached_item_emb is None:
             self._cached_user_emb, self._cached_item_emb = self._propagate()
         return self._cached_item_emb
