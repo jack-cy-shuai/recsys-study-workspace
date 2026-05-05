@@ -5,6 +5,7 @@ __pycache__/
 # Local virtual environments
 .venv/
 venv/
+.venv_recbole/
 
 # IDE files
 .idea/
@@ -13,6 +14,16 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Training artifacts
+# Training artifacts (keep small checkpoints, ignore large model files)
 artifacts/**/best_model.pt
+artifacts/**/checkpoints/
+artifacts/recbole_bpr_ml100k/
+artifacts/recbole_compare/
 
+# Experiment logs
+logs/
+
+# Saved models (large files)
+saved_models/*.pt
+saved_models/*.pth
+!saved_models/.gitkeep

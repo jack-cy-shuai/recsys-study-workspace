@@ -1,0 +1,449 @@
+Fri 24 Apr 2026 13:44:28 INFO  ['I:\\codex文件\\run_recmodels\\run_recbole_bpr.py']
+Fri 24 Apr 2026 13:44:28 INFO  
+General Hyper Parameters:
+gpu_id = 0
+use_gpu = True
+seed = 2024
+state = INFO
+reproducibility = True
+data_path = I:\miniconda3\envs\recsys\Lib\site-packages\recbole\config\../dataset_example/ml-100k
+checkpoint_dir = I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints
+show_progress = True
+save_dataset = False
+dataset_save_path = None
+save_dataloaders = False
+dataloaders_save_path = None
+log_wandb = False
+
+Training Hyper Parameters:
+epochs = 300
+train_batch_size = 2048
+learner = adam
+learning_rate = 0.001
+train_neg_sample_args = {'distribution': 'uniform', 'sample_num': 1, 'alpha': 1.0, 'dynamic': False, 'candidate_num': 0}
+eval_step = 1
+stopping_step = 10
+clip_grad_norm = None
+weight_decay = 0.0
+loss_decimal_place = 4
+
+Evaluation Hyper Parameters:
+eval_args = {'split': {'RS': [0.8, 0.1, 0.1]}, 'order': 'RO', 'group_by': 'user', 'mode': {'valid': 'full', 'test': 'full'}}
+repeatable = False
+metrics = ['Recall', 'MRR', 'NDCG', 'Hit', 'Precision']
+topk = [10]
+valid_metric = MRR@10
+valid_metric_bigger = True
+eval_batch_size = 4096
+metric_decimal_place = 4
+
+Dataset Hyper Parameters:
+field_separator = 	
+seq_separator =  
+USER_ID_FIELD = user_id
+ITEM_ID_FIELD = item_id
+RATING_FIELD = rating
+TIME_FIELD = timestamp
+seq_len = None
+LABEL_FIELD = label
+threshold = None
+NEG_PREFIX = neg_
+load_col = {'inter': ['user_id', 'item_id', 'rating', 'timestamp']}
+unload_col = None
+unused_col = None
+additional_feat_suffix = None
+rm_dup_inter = None
+val_interval = None
+filter_inter_by_user_or_item = True
+user_inter_num_interval = None
+item_inter_num_interval = None
+alias_of_user_id = None
+alias_of_item_id = None
+alias_of_entity_id = None
+alias_of_relation_id = None
+preload_weight = None
+normalize_field = None
+normalize_all = True
+ITEM_LIST_LENGTH_FIELD = item_length
+LIST_SUFFIX = _list
+MAX_ITEM_LIST_LENGTH = 50
+POSITION_FIELD = position_id
+HEAD_ENTITY_ID_FIELD = head_id
+TAIL_ENTITY_ID_FIELD = tail_id
+RELATION_ID_FIELD = relation_id
+ENTITY_ID_FIELD = entity_id
+kg_reverse_r = False
+entity_kg_num_interval = None
+relation_kg_num_interval = None
+benchmark_filename = None
+
+Other Hyper Parameters: 
+worker = 0
+wandb_project = recbole
+shuffle = True
+require_pow = False
+enable_amp = False
+enable_scaler = False
+transform = None
+embedding_size = 64
+numerical_features = []
+discretization = None
+MODEL_TYPE = ModelType.GENERAL
+MODEL_INPUT_TYPE = InputType.PAIRWISE
+eval_type = EvaluatorType.RANKING
+single_spec = True
+local_rank = 0
+device = cuda
+valid_neg_sample_args = {'distribution': 'uniform', 'sample_num': 'none'}
+test_neg_sample_args = {'distribution': 'uniform', 'sample_num': 'none'}
+
+
+Fri 24 Apr 2026 13:44:29 INFO  ml-100k
+The number of users: 944
+Average actions of users: 106.04453870625663
+The number of items: 1683
+Average actions of items: 59.45303210463734
+The number of inters: 100000
+The sparsity of the dataset: 93.70575143257098%
+Remain Fields: ['user_id', 'item_id', 'rating', 'timestamp']
+Fri 24 Apr 2026 13:44:29 INFO  [Training]: train_batch_size = [2048] train_neg_sample_args: [{'distribution': 'uniform', 'sample_num': 1, 'alpha': 1.0, 'dynamic': False, 'candidate_num': 0}]
+Fri 24 Apr 2026 13:44:29 INFO  [Evaluation]: eval_batch_size = [4096] eval_args: [{'split': {'RS': [0.8, 0.1, 0.1]}, 'order': 'RO', 'group_by': 'user', 'mode': {'valid': 'full', 'test': 'full'}}]
+Fri 24 Apr 2026 13:44:29 INFO  BPR(
+  (user_embedding): Embedding(944, 64)
+  (item_embedding): Embedding(1683, 64)
+  (loss): BPRLoss()
+)
+Trainable parameters: 168128
+Fri 24 Apr 2026 13:44:30 INFO  FLOPs: 128.0
+Fri 24 Apr 2026 13:44:31 INFO  epoch 0 training [time: 0.22s, train loss: 27.7221]
+Fri 24 Apr 2026 13:44:32 INFO  epoch 0 evaluating [time: 1.55s, valid_score: 0.026300]
+Fri 24 Apr 2026 13:44:32 INFO  valid result: 
+recall@10 : 0.0053    mrr@10 : 0.0263    ndcg@10 : 0.0089    hit@10 : 0.0721    precision@10 : 0.0073
+Fri 24 Apr 2026 13:44:32 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:32 INFO  epoch 1 training [time: 0.24s, train loss: 27.6171]
+Fri 24 Apr 2026 13:44:33 INFO  epoch 1 evaluating [time: 0.54s, valid_score: 0.063400]
+Fri 24 Apr 2026 13:44:33 INFO  valid result: 
+recall@10 : 0.0172    mrr@10 : 0.0634    ndcg@10 : 0.0255    hit@10 : 0.176    precision@10 : 0.0222
+Fri 24 Apr 2026 13:44:33 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:33 INFO  epoch 2 training [time: 0.24s, train loss: 27.2386]
+Fri 24 Apr 2026 13:44:34 INFO  epoch 2 evaluating [time: 0.54s, valid_score: 0.174200]
+Fri 24 Apr 2026 13:44:34 INFO  valid result: 
+recall@10 : 0.0655    mrr@10 : 0.1742    ndcg@10 : 0.0868    hit@10 : 0.4051    precision@10 : 0.073
+Fri 24 Apr 2026 13:44:34 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:34 INFO  epoch 3 training [time: 0.24s, train loss: 25.7397]
+Fri 24 Apr 2026 13:44:34 INFO  epoch 3 evaluating [time: 0.47s, valid_score: 0.245000]
+Fri 24 Apr 2026 13:44:34 INFO  valid result: 
+recall@10 : 0.1034    mrr@10 : 0.245    ndcg@10 : 0.129    hit@10 : 0.5186    precision@10 : 0.0982
+Fri 24 Apr 2026 13:44:34 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:35 INFO  epoch 4 training [time: 0.21s, train loss: 22.2184]
+Fri 24 Apr 2026 13:44:35 INFO  epoch 4 evaluating [time: 0.49s, valid_score: 0.272500]
+Fri 24 Apr 2026 13:44:35 INFO  valid result: 
+recall@10 : 0.1185    mrr@10 : 0.2725    ndcg@10 : 0.1428    hit@10 : 0.5578    precision@10 : 0.1066
+Fri 24 Apr 2026 13:44:35 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:35 INFO  epoch 5 training [time: 0.21s, train loss: 18.1541]
+Fri 24 Apr 2026 13:44:36 INFO  epoch 5 evaluating [time: 0.50s, valid_score: 0.292200]
+Fri 24 Apr 2026 13:44:36 INFO  valid result: 
+recall@10 : 0.1229    mrr@10 : 0.2922    ndcg@10 : 0.1507    hit@10 : 0.5589    precision@10 : 0.108
+Fri 24 Apr 2026 13:44:36 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:36 INFO  epoch 6 training [time: 0.22s, train loss: 15.5359]
+Fri 24 Apr 2026 13:44:37 INFO  epoch 6 evaluating [time: 0.54s, valid_score: 0.310700]
+Fri 24 Apr 2026 13:44:37 INFO  valid result: 
+recall@10 : 0.1292    mrr@10 : 0.3107    ndcg@10 : 0.1574    hit@10 : 0.5832    precision@10 : 0.1092
+Fri 24 Apr 2026 13:44:37 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:37 INFO  epoch 7 training [time: 0.23s, train loss: 14.1660]
+Fri 24 Apr 2026 13:44:37 INFO  epoch 7 evaluating [time: 0.62s, valid_score: 0.319600]
+Fri 24 Apr 2026 13:44:37 INFO  valid result: 
+recall@10 : 0.1351    mrr@10 : 0.3196    ndcg@10 : 0.1633    hit@10 : 0.596    precision@10 : 0.111
+Fri 24 Apr 2026 13:44:37 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:38 INFO  epoch 8 training [time: 0.23s, train loss: 13.5096]
+Fri 24 Apr 2026 13:44:38 INFO  epoch 8 evaluating [time: 0.58s, valid_score: 0.319600]
+Fri 24 Apr 2026 13:44:38 INFO  valid result: 
+recall@10 : 0.1412    mrr@10 : 0.3196    ndcg@10 : 0.1677    hit@10 : 0.6108    precision@10 : 0.115
+Fri 24 Apr 2026 13:44:38 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:38 INFO  epoch 9 training [time: 0.22s, train loss: 12.8490]
+Fri 24 Apr 2026 13:44:39 INFO  epoch 9 evaluating [time: 0.56s, valid_score: 0.323500]
+Fri 24 Apr 2026 13:44:39 INFO  valid result: 
+recall@10 : 0.1473    mrr@10 : 0.3235    ndcg@10 : 0.1712    hit@10 : 0.6193    precision@10 : 0.1168
+Fri 24 Apr 2026 13:44:39 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:39 INFO  epoch 10 training [time: 0.23s, train loss: 12.3595]
+Fri 24 Apr 2026 13:44:40 INFO  epoch 10 evaluating [time: 1.00s, valid_score: 0.338600]
+Fri 24 Apr 2026 13:44:40 INFO  valid result: 
+recall@10 : 0.1525    mrr@10 : 0.3386    ndcg@10 : 0.1789    hit@10 : 0.6352    precision@10 : 0.12
+Fri 24 Apr 2026 13:44:40 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:41 INFO  epoch 11 training [time: 0.37s, train loss: 11.9728]
+Fri 24 Apr 2026 13:44:42 INFO  epoch 11 evaluating [time: 1.00s, valid_score: 0.347500]
+Fri 24 Apr 2026 13:44:42 INFO  valid result: 
+recall@10 : 0.1618    mrr@10 : 0.3475    ndcg@10 : 0.1853    hit@10 : 0.6554    precision@10 : 0.123
+Fri 24 Apr 2026 13:44:42 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:42 INFO  epoch 12 training [time: 0.30s, train loss: 11.5732]
+Fri 24 Apr 2026 13:44:43 INFO  epoch 12 evaluating [time: 0.88s, valid_score: 0.345600]
+Fri 24 Apr 2026 13:44:43 INFO  valid result: 
+recall@10 : 0.1655    mrr@10 : 0.3456    ndcg@10 : 0.188    hit@10 : 0.6638    precision@10 : 0.1256
+Fri 24 Apr 2026 13:44:43 INFO  epoch 13 training [time: 0.31s, train loss: 11.0824]
+Fri 24 Apr 2026 13:44:44 INFO  epoch 13 evaluating [time: 0.91s, valid_score: 0.351900]
+Fri 24 Apr 2026 13:44:44 INFO  valid result: 
+recall@10 : 0.1704    mrr@10 : 0.3519    ndcg@10 : 0.1927    hit@10 : 0.6755    precision@10 : 0.1295
+Fri 24 Apr 2026 13:44:44 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:44 INFO  epoch 14 training [time: 0.29s, train loss: 10.7538]
+Fri 24 Apr 2026 13:44:45 INFO  epoch 14 evaluating [time: 1.01s, valid_score: 0.352400]
+Fri 24 Apr 2026 13:44:45 INFO  valid result: 
+recall@10 : 0.1733    mrr@10 : 0.3524    ndcg@10 : 0.1944    hit@10 : 0.684    precision@10 : 0.1305
+Fri 24 Apr 2026 13:44:45 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:46 INFO  epoch 15 training [time: 0.31s, train loss: 10.5095]
+Fri 24 Apr 2026 13:44:46 INFO  epoch 15 evaluating [time: 0.80s, valid_score: 0.358900]
+Fri 24 Apr 2026 13:44:46 INFO  valid result: 
+recall@10 : 0.1751    mrr@10 : 0.3589    ndcg@10 : 0.1981    hit@10 : 0.6744    precision@10 : 0.1324
+Fri 24 Apr 2026 13:44:46 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:47 INFO  epoch 16 training [time: 0.28s, train loss: 10.1557]
+Fri 24 Apr 2026 13:44:48 INFO  epoch 16 evaluating [time: 0.78s, valid_score: 0.357600]
+Fri 24 Apr 2026 13:44:48 INFO  valid result: 
+recall@10 : 0.1802    mrr@10 : 0.3576    ndcg@10 : 0.2007    hit@10 : 0.684    precision@10 : 0.1354
+Fri 24 Apr 2026 13:44:48 INFO  epoch 17 training [time: 0.29s, train loss: 9.8279]
+Fri 24 Apr 2026 13:44:49 INFO  epoch 17 evaluating [time: 0.77s, valid_score: 0.359600]
+Fri 24 Apr 2026 13:44:49 INFO  valid result: 
+recall@10 : 0.1814    mrr@10 : 0.3596    ndcg@10 : 0.2021    hit@10 : 0.6925    precision@10 : 0.1369
+Fri 24 Apr 2026 13:44:49 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:49 INFO  epoch 18 training [time: 0.28s, train loss: 9.6173]
+Fri 24 Apr 2026 13:44:50 INFO  epoch 18 evaluating [time: 0.81s, valid_score: 0.365800]
+Fri 24 Apr 2026 13:44:50 INFO  valid result: 
+recall@10 : 0.1825    mrr@10 : 0.3658    ndcg@10 : 0.2051    hit@10 : 0.6903    precision@10 : 0.1383
+Fri 24 Apr 2026 13:44:50 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:50 INFO  epoch 19 training [time: 0.29s, train loss: 9.3393]
+Fri 24 Apr 2026 13:44:51 INFO  epoch 19 evaluating [time: 0.77s, valid_score: 0.364700]
+Fri 24 Apr 2026 13:44:51 INFO  valid result: 
+recall@10 : 0.1842    mrr@10 : 0.3647    ndcg@10 : 0.2063    hit@10 : 0.6957    precision@10 : 0.1402
+Fri 24 Apr 2026 13:44:51 INFO  epoch 20 training [time: 0.27s, train loss: 9.0461]
+Fri 24 Apr 2026 13:44:52 INFO  epoch 20 evaluating [time: 0.78s, valid_score: 0.360200]
+Fri 24 Apr 2026 13:44:52 INFO  valid result: 
+recall@10 : 0.1853    mrr@10 : 0.3602    ndcg@10 : 0.2056    hit@10 : 0.7031    precision@10 : 0.1405
+Fri 24 Apr 2026 13:44:52 INFO  epoch 21 training [time: 0.32s, train loss: 8.9441]
+Fri 24 Apr 2026 13:44:53 INFO  epoch 21 evaluating [time: 0.76s, valid_score: 0.367200]
+Fri 24 Apr 2026 13:44:53 INFO  valid result: 
+recall@10 : 0.1858    mrr@10 : 0.3672    ndcg@10 : 0.2079    hit@10 : 0.7073    precision@10 : 0.1407
+Fri 24 Apr 2026 13:44:53 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:53 INFO  epoch 22 training [time: 0.27s, train loss: 8.7972]
+Fri 24 Apr 2026 13:44:54 INFO  epoch 22 evaluating [time: 0.78s, valid_score: 0.367200]
+Fri 24 Apr 2026 13:44:54 INFO  valid result: 
+recall@10 : 0.1884    mrr@10 : 0.3672    ndcg@10 : 0.2103    hit@10 : 0.7073    precision@10 : 0.1433
+Fri 24 Apr 2026 13:44:54 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:54 INFO  epoch 23 training [time: 0.32s, train loss: 8.5481]
+Fri 24 Apr 2026 13:44:55 INFO  epoch 23 evaluating [time: 1.20s, valid_score: 0.369100]
+Fri 24 Apr 2026 13:44:55 INFO  valid result: 
+recall@10 : 0.1866    mrr@10 : 0.3691    ndcg@10 : 0.2103    hit@10 : 0.7073    precision@10 : 0.1432
+Fri 24 Apr 2026 13:44:56 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:56 INFO  epoch 24 training [time: 0.34s, train loss: 8.5031]
+Fri 24 Apr 2026 13:44:57 INFO  epoch 24 evaluating [time: 0.79s, valid_score: 0.367800]
+Fri 24 Apr 2026 13:44:57 INFO  valid result: 
+recall@10 : 0.1904    mrr@10 : 0.3678    ndcg@10 : 0.2133    hit@10 : 0.7094    precision@10 : 0.148
+Fri 24 Apr 2026 13:44:57 INFO  epoch 25 training [time: 0.29s, train loss: 8.3630]
+Fri 24 Apr 2026 13:44:58 INFO  epoch 25 evaluating [time: 0.92s, valid_score: 0.370900]
+Fri 24 Apr 2026 13:44:58 INFO  valid result: 
+recall@10 : 0.1928    mrr@10 : 0.3709    ndcg@10 : 0.2144    hit@10 : 0.7147    precision@10 : 0.1466
+Fri 24 Apr 2026 13:44:58 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:44:58 INFO  epoch 26 training [time: 0.29s, train loss: 8.1916]
+Fri 24 Apr 2026 13:44:59 INFO  epoch 26 evaluating [time: 0.80s, valid_score: 0.368200]
+Fri 24 Apr 2026 13:44:59 INFO  valid result: 
+recall@10 : 0.1946    mrr@10 : 0.3682    ndcg@10 : 0.2161    hit@10 : 0.7211    precision@10 : 0.1481
+Fri 24 Apr 2026 13:44:59 INFO  epoch 27 training [time: 0.33s, train loss: 8.1338]
+Fri 24 Apr 2026 13:45:00 INFO  epoch 27 evaluating [time: 0.84s, valid_score: 0.374900]
+Fri 24 Apr 2026 13:45:00 INFO  valid result: 
+recall@10 : 0.1966    mrr@10 : 0.3749    ndcg@10 : 0.2181    hit@10 : 0.7317    precision@10 : 0.149
+Fri 24 Apr 2026 13:45:00 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:00 INFO  epoch 28 training [time: 0.30s, train loss: 7.8908]
+Fri 24 Apr 2026 13:45:01 INFO  epoch 28 evaluating [time: 0.79s, valid_score: 0.373400]
+Fri 24 Apr 2026 13:45:01 INFO  valid result: 
+recall@10 : 0.1972    mrr@10 : 0.3734    ndcg@10 : 0.2173    hit@10 : 0.7285    precision@10 : 0.1478
+Fri 24 Apr 2026 13:45:02 INFO  epoch 29 training [time: 0.31s, train loss: 7.7830]
+Fri 24 Apr 2026 13:45:02 INFO  epoch 29 evaluating [time: 0.80s, valid_score: 0.371400]
+Fri 24 Apr 2026 13:45:02 INFO  valid result: 
+recall@10 : 0.2002    mrr@10 : 0.3714    ndcg@10 : 0.2189    hit@10 : 0.7306    precision@10 : 0.1507
+Fri 24 Apr 2026 13:45:03 INFO  epoch 30 training [time: 0.31s, train loss: 7.6883]
+Fri 24 Apr 2026 13:45:03 INFO  epoch 30 evaluating [time: 0.82s, valid_score: 0.375900]
+Fri 24 Apr 2026 13:45:03 INFO  valid result: 
+recall@10 : 0.2003    mrr@10 : 0.3759    ndcg@10 : 0.2197    hit@10 : 0.7275    precision@10 : 0.1504
+Fri 24 Apr 2026 13:45:03 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:04 INFO  epoch 31 training [time: 0.30s, train loss: 7.5630]
+Fri 24 Apr 2026 13:45:05 INFO  epoch 31 evaluating [time: 0.86s, valid_score: 0.382300]
+Fri 24 Apr 2026 13:45:05 INFO  valid result: 
+recall@10 : 0.1971    mrr@10 : 0.3823    ndcg@10 : 0.22    hit@10 : 0.7264    precision@10 : 0.1494
+Fri 24 Apr 2026 13:45:05 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:05 INFO  epoch 32 training [time: 0.36s, train loss: 7.4625]
+Fri 24 Apr 2026 13:45:06 INFO  epoch 32 evaluating [time: 0.87s, valid_score: 0.386200]
+Fri 24 Apr 2026 13:45:06 INFO  valid result: 
+recall@10 : 0.2007    mrr@10 : 0.3862    ndcg@10 : 0.2238    hit@10 : 0.7328    precision@10 : 0.1521
+Fri 24 Apr 2026 13:45:06 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:06 INFO  epoch 33 training [time: 0.29s, train loss: 7.3896]
+Fri 24 Apr 2026 13:45:07 INFO  epoch 33 evaluating [time: 0.77s, valid_score: 0.387600]
+Fri 24 Apr 2026 13:45:07 INFO  valid result: 
+recall@10 : 0.201    mrr@10 : 0.3876    ndcg@10 : 0.2248    hit@10 : 0.7264    precision@10 : 0.1526
+Fri 24 Apr 2026 13:45:07 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:07 INFO  epoch 34 training [time: 0.29s, train loss: 7.2409]
+Fri 24 Apr 2026 13:45:08 INFO  epoch 34 evaluating [time: 0.86s, valid_score: 0.382400]
+Fri 24 Apr 2026 13:45:08 INFO  valid result: 
+recall@10 : 0.2019    mrr@10 : 0.3824    ndcg@10 : 0.2239    hit@10 : 0.7285    precision@10 : 0.152
+Fri 24 Apr 2026 13:45:08 INFO  epoch 35 training [time: 0.32s, train loss: 7.1094]
+Fri 24 Apr 2026 13:45:09 INFO  epoch 35 evaluating [time: 0.83s, valid_score: 0.386300]
+Fri 24 Apr 2026 13:45:09 INFO  valid result: 
+recall@10 : 0.1998    mrr@10 : 0.3863    ndcg@10 : 0.2234    hit@10 : 0.7328    precision@10 : 0.1509
+Fri 24 Apr 2026 13:45:10 INFO  epoch 36 training [time: 0.29s, train loss: 7.0441]
+Fri 24 Apr 2026 13:45:10 INFO  epoch 36 evaluating [time: 0.94s, valid_score: 0.382400]
+Fri 24 Apr 2026 13:45:10 INFO  valid result: 
+recall@10 : 0.2009    mrr@10 : 0.3824    ndcg@10 : 0.2233    hit@10 : 0.7338    precision@10 : 0.1517
+Fri 24 Apr 2026 13:45:11 INFO  epoch 37 training [time: 0.31s, train loss: 6.9925]
+Fri 24 Apr 2026 13:45:12 INFO  epoch 37 evaluating [time: 0.87s, valid_score: 0.393900]
+Fri 24 Apr 2026 13:45:12 INFO  valid result: 
+recall@10 : 0.2062    mrr@10 : 0.3939    ndcg@10 : 0.2285    hit@10 : 0.7466    precision@10 : 0.1542
+Fri 24 Apr 2026 13:45:12 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:12 INFO  epoch 38 training [time: 0.31s, train loss: 6.9204]
+Fri 24 Apr 2026 13:45:13 INFO  epoch 38 evaluating [time: 0.79s, valid_score: 0.395300]
+Fri 24 Apr 2026 13:45:13 INFO  valid result: 
+recall@10 : 0.2041    mrr@10 : 0.3953    ndcg@10 : 0.2283    hit@10 : 0.7423    precision@10 : 0.1539
+Fri 24 Apr 2026 13:45:13 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:13 INFO  epoch 39 training [time: 0.28s, train loss: 6.8055]
+Fri 24 Apr 2026 13:45:14 INFO  epoch 39 evaluating [time: 0.77s, valid_score: 0.398600]
+Fri 24 Apr 2026 13:45:14 INFO  valid result: 
+recall@10 : 0.2051    mrr@10 : 0.3986    ndcg@10 : 0.2296    hit@10 : 0.7413    precision@10 : 0.1532
+Fri 24 Apr 2026 13:45:14 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:14 INFO  epoch 40 training [time: 0.27s, train loss: 6.6478]
+Fri 24 Apr 2026 13:45:15 INFO  epoch 40 evaluating [time: 0.81s, valid_score: 0.396100]
+Fri 24 Apr 2026 13:45:15 INFO  valid result: 
+recall@10 : 0.2087    mrr@10 : 0.3961    ndcg@10 : 0.2297    hit@10 : 0.7455    precision@10 : 0.1554
+Fri 24 Apr 2026 13:45:15 INFO  epoch 41 training [time: 0.33s, train loss: 6.6256]
+Fri 24 Apr 2026 13:45:16 INFO  epoch 41 evaluating [time: 0.73s, valid_score: 0.396200]
+Fri 24 Apr 2026 13:45:16 INFO  valid result: 
+recall@10 : 0.209    mrr@10 : 0.3962    ndcg@10 : 0.2307    hit@10 : 0.7497    precision@10 : 0.1573
+Fri 24 Apr 2026 13:45:16 INFO  epoch 42 training [time: 0.27s, train loss: 6.5133]
+Fri 24 Apr 2026 13:45:17 INFO  epoch 42 evaluating [time: 0.76s, valid_score: 0.396800]
+Fri 24 Apr 2026 13:45:17 INFO  valid result: 
+recall@10 : 0.2115    mrr@10 : 0.3968    ndcg@10 : 0.2326    hit@10 : 0.7529    precision@10 : 0.1586
+Fri 24 Apr 2026 13:45:17 INFO  epoch 43 training [time: 0.29s, train loss: 6.4726]
+Fri 24 Apr 2026 13:45:18 INFO  epoch 43 evaluating [time: 0.82s, valid_score: 0.401000]
+Fri 24 Apr 2026 13:45:18 INFO  valid result: 
+recall@10 : 0.2068    mrr@10 : 0.401    ndcg@10 : 0.2311    hit@10 : 0.755    precision@10 : 0.1558
+Fri 24 Apr 2026 13:45:18 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:18 INFO  epoch 44 training [time: 0.28s, train loss: 6.4063]
+Fri 24 Apr 2026 13:45:19 INFO  epoch 44 evaluating [time: 0.83s, valid_score: 0.399600]
+Fri 24 Apr 2026 13:45:19 INFO  valid result: 
+recall@10 : 0.2085    mrr@10 : 0.3996    ndcg@10 : 0.2312    hit@10 : 0.754    precision@10 : 0.1566
+Fri 24 Apr 2026 13:45:19 INFO  epoch 45 training [time: 0.28s, train loss: 6.2597]
+Fri 24 Apr 2026 13:45:20 INFO  epoch 45 evaluating [time: 0.79s, valid_score: 0.400800]
+Fri 24 Apr 2026 13:45:20 INFO  valid result: 
+recall@10 : 0.2096    mrr@10 : 0.4008    ndcg@10 : 0.2318    hit@10 : 0.7561    precision@10 : 0.1571
+Fri 24 Apr 2026 13:45:21 INFO  epoch 46 training [time: 0.34s, train loss: 6.3195]
+Fri 24 Apr 2026 13:45:21 INFO  epoch 46 evaluating [time: 0.74s, valid_score: 0.398400]
+Fri 24 Apr 2026 13:45:21 INFO  valid result: 
+recall@10 : 0.2121    mrr@10 : 0.3984    ndcg@10 : 0.232    hit@10 : 0.7561    precision@10 : 0.1581
+Fri 24 Apr 2026 13:45:22 INFO  epoch 47 training [time: 0.31s, train loss: 6.2391]
+Fri 24 Apr 2026 13:45:22 INFO  epoch 47 evaluating [time: 0.73s, valid_score: 0.401200]
+Fri 24 Apr 2026 13:45:22 INFO  valid result: 
+recall@10 : 0.2124    mrr@10 : 0.4012    ndcg@10 : 0.2324    hit@10 : 0.7593    precision@10 : 0.1573
+Fri 24 Apr 2026 13:45:22 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:23 INFO  epoch 48 training [time: 0.29s, train loss: 6.1342]
+Fri 24 Apr 2026 13:45:23 INFO  epoch 48 evaluating [time: 0.76s, valid_score: 0.403200]
+Fri 24 Apr 2026 13:45:23 INFO  valid result: 
+recall@10 : 0.2137    mrr@10 : 0.4032    ndcg@10 : 0.2335    hit@10 : 0.754    precision@10 : 0.1582
+Fri 24 Apr 2026 13:45:23 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:24 INFO  epoch 49 training [time: 0.27s, train loss: 6.0056]
+Fri 24 Apr 2026 13:45:25 INFO  epoch 49 evaluating [time: 0.79s, valid_score: 0.399300]
+Fri 24 Apr 2026 13:45:25 INFO  valid result: 
+recall@10 : 0.2131    mrr@10 : 0.3993    ndcg@10 : 0.2324    hit@10 : 0.7582    precision@10 : 0.158
+Fri 24 Apr 2026 13:45:25 INFO  epoch 50 training [time: 0.29s, train loss: 5.9304]
+Fri 24 Apr 2026 13:45:26 INFO  epoch 50 evaluating [time: 0.99s, valid_score: 0.403000]
+Fri 24 Apr 2026 13:45:26 INFO  valid result: 
+recall@10 : 0.212    mrr@10 : 0.403    ndcg@10 : 0.2335    hit@10 : 0.7572    precision@10 : 0.1573
+Fri 24 Apr 2026 13:45:26 INFO  epoch 51 training [time: 0.32s, train loss: 5.8206]
+Fri 24 Apr 2026 13:45:27 INFO  epoch 51 evaluating [time: 0.72s, valid_score: 0.402300]
+Fri 24 Apr 2026 13:45:27 INFO  valid result: 
+recall@10 : 0.2112    mrr@10 : 0.4023    ndcg@10 : 0.2334    hit@10 : 0.755    precision@10 : 0.158
+Fri 24 Apr 2026 13:45:27 INFO  epoch 52 training [time: 0.27s, train loss: 5.8060]
+Fri 24 Apr 2026 13:45:28 INFO  epoch 52 evaluating [time: 0.75s, valid_score: 0.399100]
+Fri 24 Apr 2026 13:45:28 INFO  valid result: 
+recall@10 : 0.208    mrr@10 : 0.3991    ndcg@10 : 0.2317    hit@10 : 0.7487    precision@10 : 0.1575
+Fri 24 Apr 2026 13:45:28 INFO  epoch 53 training [time: 0.28s, train loss: 5.6884]
+Fri 24 Apr 2026 13:45:29 INFO  epoch 53 evaluating [time: 0.84s, valid_score: 0.399200]
+Fri 24 Apr 2026 13:45:29 INFO  valid result: 
+recall@10 : 0.2125    mrr@10 : 0.3992    ndcg@10 : 0.2346    hit@10 : 0.7572    precision@10 : 0.1599
+Fri 24 Apr 2026 13:45:29 INFO  epoch 54 training [time: 0.29s, train loss: 5.6585]
+Fri 24 Apr 2026 13:45:30 INFO  epoch 54 evaluating [time: 1.16s, valid_score: 0.402700]
+Fri 24 Apr 2026 13:45:30 INFO  valid result: 
+recall@10 : 0.2107    mrr@10 : 0.4027    ndcg@10 : 0.2342    hit@10 : 0.7519    precision@10 : 0.1591
+Fri 24 Apr 2026 13:45:31 INFO  epoch 55 training [time: 0.33s, train loss: 5.6182]
+Fri 24 Apr 2026 13:45:32 INFO  epoch 55 evaluating [time: 0.89s, valid_score: 0.406200]
+Fri 24 Apr 2026 13:45:32 INFO  valid result: 
+recall@10 : 0.2141    mrr@10 : 0.4062    ndcg@10 : 0.2364    hit@10 : 0.7593    precision@10 : 0.1603
+Fri 24 Apr 2026 13:45:32 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:32 INFO  epoch 56 training [time: 0.29s, train loss: 5.5426]
+Fri 24 Apr 2026 13:45:33 INFO  epoch 56 evaluating [time: 0.83s, valid_score: 0.403100]
+Fri 24 Apr 2026 13:45:33 INFO  valid result: 
+recall@10 : 0.214    mrr@10 : 0.4031    ndcg@10 : 0.2359    hit@10 : 0.754    precision@10 : 0.1612
+Fri 24 Apr 2026 13:45:33 INFO  epoch 57 training [time: 0.32s, train loss: 5.4861]
+Fri 24 Apr 2026 13:45:34 INFO  epoch 57 evaluating [time: 0.91s, valid_score: 0.401700]
+Fri 24 Apr 2026 13:45:34 INFO  valid result: 
+recall@10 : 0.2139    mrr@10 : 0.4017    ndcg@10 : 0.2344    hit@10 : 0.7487    precision@10 : 0.1596
+Fri 24 Apr 2026 13:45:34 INFO  epoch 58 training [time: 0.31s, train loss: 5.4273]
+Fri 24 Apr 2026 13:45:35 INFO  epoch 58 evaluating [time: 0.97s, valid_score: 0.400400]
+Fri 24 Apr 2026 13:45:35 INFO  valid result: 
+recall@10 : 0.2119    mrr@10 : 0.4004    ndcg@10 : 0.2345    hit@10 : 0.7497    precision@10 : 0.1613
+Fri 24 Apr 2026 13:45:36 INFO  epoch 59 training [time: 0.29s, train loss: 5.3238]
+Fri 24 Apr 2026 13:45:37 INFO  epoch 59 evaluating [time: 0.93s, valid_score: 0.407100]
+Fri 24 Apr 2026 13:45:37 INFO  valid result: 
+recall@10 : 0.2119    mrr@10 : 0.4071    ndcg@10 : 0.2354    hit@10 : 0.7508    precision@10 : 0.1603
+Fri 24 Apr 2026 13:45:37 INFO  Saving current: I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:37 INFO  epoch 60 training [time: 0.30s, train loss: 5.2604]
+Fri 24 Apr 2026 13:45:38 INFO  epoch 60 evaluating [time: 0.97s, valid_score: 0.403900]
+Fri 24 Apr 2026 13:45:38 INFO  valid result: 
+recall@10 : 0.2107    mrr@10 : 0.4039    ndcg@10 : 0.2351    hit@10 : 0.7434    precision@10 : 0.1616
+Fri 24 Apr 2026 13:45:38 INFO  epoch 61 training [time: 0.32s, train loss: 5.2783]
+Fri 24 Apr 2026 13:45:39 INFO  epoch 61 evaluating [time: 1.03s, valid_score: 0.403600]
+Fri 24 Apr 2026 13:45:39 INFO  valid result: 
+recall@10 : 0.2117    mrr@10 : 0.4036    ndcg@10 : 0.2361    hit@10 : 0.7466    precision@10 : 0.162
+Fri 24 Apr 2026 13:45:39 INFO  epoch 62 training [time: 0.31s, train loss: 5.0538]
+Fri 24 Apr 2026 13:45:41 INFO  epoch 62 evaluating [time: 1.09s, valid_score: 0.401600]
+Fri 24 Apr 2026 13:45:41 INFO  valid result: 
+recall@10 : 0.2121    mrr@10 : 0.4016    ndcg@10 : 0.2347    hit@10 : 0.7572    precision@10 : 0.1613
+Fri 24 Apr 2026 13:45:41 INFO  epoch 63 training [time: 0.35s, train loss: 5.1078]
+Fri 24 Apr 2026 13:45:42 INFO  epoch 63 evaluating [time: 0.97s, valid_score: 0.400800]
+Fri 24 Apr 2026 13:45:42 INFO  valid result: 
+recall@10 : 0.2144    mrr@10 : 0.4008    ndcg@10 : 0.2347    hit@10 : 0.7593    precision@10 : 0.1609
+Fri 24 Apr 2026 13:45:42 INFO  epoch 64 training [time: 0.35s, train loss: 5.0742]
+Fri 24 Apr 2026 13:45:43 INFO  epoch 64 evaluating [time: 1.09s, valid_score: 0.397800]
+Fri 24 Apr 2026 13:45:43 INFO  valid result: 
+recall@10 : 0.2147    mrr@10 : 0.3978    ndcg@10 : 0.2348    hit@10 : 0.7603    precision@10 : 0.162
+Fri 24 Apr 2026 13:45:44 INFO  epoch 65 training [time: 0.29s, train loss: 5.0536]
+Fri 24 Apr 2026 13:45:45 INFO  epoch 65 evaluating [time: 1.01s, valid_score: 0.402200]
+Fri 24 Apr 2026 13:45:45 INFO  valid result: 
+recall@10 : 0.2154    mrr@10 : 0.4022    ndcg@10 : 0.2364    hit@10 : 0.7561    precision@10 : 0.1621
+Fri 24 Apr 2026 13:45:45 INFO  epoch 66 training [time: 0.31s, train loss: 4.9394]
+Fri 24 Apr 2026 13:45:46 INFO  epoch 66 evaluating [time: 0.91s, valid_score: 0.402200]
+Fri 24 Apr 2026 13:45:46 INFO  valid result: 
+recall@10 : 0.218    mrr@10 : 0.4022    ndcg@10 : 0.238    hit@10 : 0.7646    precision@10 : 0.1638
+Fri 24 Apr 2026 13:45:46 INFO  epoch 67 training [time: 0.35s, train loss: 4.8427]
+Fri 24 Apr 2026 13:45:47 INFO  epoch 67 evaluating [time: 1.22s, valid_score: 0.402700]
+Fri 24 Apr 2026 13:45:47 INFO  valid result: 
+recall@10 : 0.2184    mrr@10 : 0.4027    ndcg@10 : 0.2382    hit@10 : 0.7614    precision@10 : 0.1635
+Fri 24 Apr 2026 13:45:48 INFO  epoch 68 training [time: 0.33s, train loss: 4.8123]
+Fri 24 Apr 2026 13:45:49 INFO  epoch 68 evaluating [time: 1.03s, valid_score: 0.402700]
+Fri 24 Apr 2026 13:45:49 INFO  valid result: 
+recall@10 : 0.2179    mrr@10 : 0.4027    ndcg@10 : 0.2386    hit@10 : 0.7646    precision@10 : 0.1635
+Fri 24 Apr 2026 13:45:49 INFO  epoch 69 training [time: 0.33s, train loss: 4.7574]
+Fri 24 Apr 2026 13:45:50 INFO  epoch 69 evaluating [time: 1.14s, valid_score: 0.400200]
+Fri 24 Apr 2026 13:45:50 INFO  valid result: 
+recall@10 : 0.217    mrr@10 : 0.4002    ndcg@10 : 0.2369    hit@10 : 0.7593    precision@10 : 0.1627
+Fri 24 Apr 2026 13:45:51 INFO  epoch 70 training [time: 0.33s, train loss: 4.6159]
+Fri 24 Apr 2026 13:45:52 INFO  epoch 70 evaluating [time: 1.00s, valid_score: 0.404300]
+Fri 24 Apr 2026 13:45:52 INFO  valid result: 
+recall@10 : 0.2167    mrr@10 : 0.4043    ndcg@10 : 0.2382    hit@10 : 0.7582    precision@10 : 0.1637
+Fri 24 Apr 2026 13:45:52 INFO  Finished training, best eval result in epoch 59
+Fri 24 Apr 2026 13:45:52 INFO  Loading model structure and parameters from I:\codex文件\run_recmodels\artifacts\recbole_bpr_ml100k\checkpoints\BPR-Apr-24-2026_13-44-30.pth
+Fri 24 Apr 2026 13:45:54 INFO  The running environment of this training is as follows:
++-------------+----------------+
+| Environment |     Usage      |
++=============+================+
+| CPU         |    32.40 %     |
++-------------+----------------+
+| GPU         | 0.01 G/4.00 G  |
++-------------+----------------+
+| Memory      | 2.28 G/15.19 G |
++-------------+----------------+
+Fri 24 Apr 2026 13:45:54 INFO  best valid : OrderedDict([('recall@10', 0.2119), ('mrr@10', 0.4071), ('ndcg@10', 0.2354), ('hit@10', 0.7508), ('precision@10', 0.1603)])
+Fri 24 Apr 2026 13:45:54 INFO  test result: OrderedDict([('recall@10', 0.2488), ('mrr@10', 0.4742), ('ndcg@10', 0.2882), ('hit@10', 0.7837), ('precision@10', 0.1998)])

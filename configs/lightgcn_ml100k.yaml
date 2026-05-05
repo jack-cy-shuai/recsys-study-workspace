@@ -1,0 +1,39 @@
+# LightGCN on MovieLens-100K (Leave-One-Out)
+# =============================================
+# 使用留一法评估的 LightGCN 基线实验配置。
+# 这是第一个完整的基线实验，后续其他模型配置均参照此模板。
+
+# ── 通用设置 ──
+experiment_name: lightgcn_ml100k
+seed: 2024
+device: cpu
+output_dir: artifacts/lightgcn_ml100k
+log_dir: logs/lightgcn_ml100k
+
+# ── 数据 ──
+data:
+  dataset: ml-100k         # 数据集名称
+  data_dir: data/ml-100k    # 原始数据目录
+  processed_dir: data/processed_ml100k  # 预处理后数据输出目录
+  min_rating: 0             # 最低评分阈值（0=保留全部，用于隐式反馈）
+  min_interactions: 5       # 用户最少交互数
+
+# ── 模型 ──
+model:
+  name: LightGCN
+  embedding_dim: 64
+  num_layers: 3             # 图传播层数
+
+# ── 训练 ──
+training:
+  epochs: 200
+  batch_size: 2048
+  lr: 0.001
+  weight_decay: 0.0001      # Adam weight_decay（同时也是 L2 reg 权重）
+  early_stop_patience: 20   # 验证指标不改善的容忍 epoch 数
+  log_interval: 10          # 每多少个 epoch 打印一次日志
+
+# ── 评估 ──
+evaluation:
+  ks: [10, 20, 50]          # Top-K 评测的 K 值列表
+  valid_metric: "Recall@20" # 用于早停和选择最佳模型的验证指标

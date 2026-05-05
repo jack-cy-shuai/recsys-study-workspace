@@ -1,9 +1,12 @@
-"""Minimal LightGCN reproduction package.
+"""DEPRECATED — 此包已被迁移到新项目结构。
 
-这个包里放的是一个尽量精简、但训练流程完整的 LightGCN 实现。
-拆成多个文件的目的，是为了便于分别调试：
+旧代码保留仅作为历史参考。
 
-- `data.py`：数据读取、ID 重映射、邻接矩阵构建、负采样
-- `model.py`：LightGCN 模型本体和 BPR loss
-- `evaluate.py`：Recall / NDCG 指标计算
+新位置与映射：
+  lightgcn/data.py 中的数据加载    → data/dataloader.py + data/preprocess.py
+  lightgcn/model.py 中的模型定义   → models/baselines/lightgcn.py
+  lightgcn/evaluate.py 中的指标   → utils/metrics.py
+
+新的训练入口：
+  python experiments/train_baseline.py --config configs/lightgcn_ml100k.yaml
 """
