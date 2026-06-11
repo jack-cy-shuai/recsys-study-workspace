@@ -1,0 +1,35 @@
+# LightGCN-LLM-Distill on Amazon-Book (热→冷蒸馏)
+# ==================================================
+# 在相加融合基础上，对冷门物品做语义桥接蒸馏。
+
+experiment_name: lightgcn_llm_distill_amazon
+seed: 2024
+device: cuda
+output_dir: artifacts/lightgcn_llm_distill_amazon
+log_dir: logs/lightgcn_llm_distill_amazon
+
+data:
+  type: rlmrec
+  dataset: amazon
+  data_dir: data/rlmrec/amazon
+
+model:
+  name: LightGCN_LLM_Distill
+  embedding_dim: 64
+  num_layers: 3
+  freeze_llm: true
+  distill_weight: 0.3
+
+training:
+  epochs: 200
+  batch_size: 2048
+  lr: 0.001
+  weight_decay: 0.0001
+  reg_weight: 0.0001
+  early_stop_patience: 20
+  log_interval: 10
+
+evaluation:
+  ks: [10, 20, 50]
+  valid_metric: "Recall@20"
+  eval_batch_size: 2048

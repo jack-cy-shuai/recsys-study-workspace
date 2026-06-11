@@ -34,11 +34,14 @@ import torch
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from data.dataloader import BPRBatchLoader, build_normalized_adj
+from data.dataloader import BPRBatchLoader, HardBPRBatchLoader, build_normalized_adj
 from data.preprocess import load_movielens, leave_one_out_split, save_processed_data
 from data.rlmrec_loader import load_rlmrec_data, RLMRecData
 from models.baselines.lightgcn import LightGCN
 from models.llm_enhanced.lightgcn_llm import LightGCN_LLM
+from models.llm_enhanced.lightgcn_llm_distill import LightGCN_LLM_Distill
+from models.llm_enhanced.lightgcn_llm_hardbpr import LightGCN_LLM_HardBPR
+from models.llm_enhanced.lightgcn_llm_full import LightGCN_LLM_Full
 from utils.common import EarlyStopping, get_device, load_config, set_seed, setup_logger
 from utils.metrics import evaluate_model, evaluate_model_batched
 
@@ -78,9 +81,49 @@ def build_model(
             freeze_llm=config.get("model", {}).get("freeze_llm", True),
         )
 
+    elif model_name == "LightGCN_LLM_Distill":
+        if llm_data is None:
+            raise ValueError(
+                "LightGCN_LLM_Distill requires llm_data."
+            )
+        neighbors_path = str(
+            Path(config["data"]["data_dir"]) / "semantic_neighbors.pkl"
+        )
+        return LightGCN_LLM_Distill(
+            num_users, num_items, model_cfg, norm_adj,
+            llm_user_emb=llm_data.llm_user_emb,
+            llm_item_emb=llm_data.llm_item_emb,
+            freeze_llm=config.get("model", {}).get("freeze_llm", True),
+            neighbors_path=neighbors_path,
+        )
+
+    elif model_name == "LightGCN_LLM_HardBPR":
+        if llm_data is None:
+            raise ValueError(
+                "LightGCN_LLM_HardBPR requires llm_data."
+            )
+        return LightGCN_LLM_HardBPR(
+            num_users, num_items, model_cfg, norm_adj,
+            llm_user_emb=llm_data.llm_user_emb,
+            llm_item_emb=llm_data.llm_item_emb,
+            freeze_llm=config.get("model", {}).get("freeze_llm", True),
+        )
+
+    elif model_name == "LightGCN_LLM_Full":
+        if llm_data is None:
+            raise ValueError(
+                "LightGCN_LLM_Full requires llm_data."
+            )
+        return LightGCN_LLM_Full(
+            num_users, num_items, model_cfg, norm_adj,
+            llm_user_emb=llm_data.llm_user_emb,
+            llm_item_emb=llm_data.llm_item_emb,
+            freeze_llm=config.get("model", {}).get("freeze_llm", True),
+        )
+
     else:
         raise ValueError(
-            f"Unknown model: {model_name}. Supported: LightGCN, LightGCN_LLM"
+            f"Unknown model: {model_name}. Supported: LightGCN, LightGCN_LLM, LightGCN_LLM_Distill, LightGCN_LLM_HardBPR, LightGCN_LLM_Full"
         )
 
 
@@ -262,19 +305,46 @@ def main() -> None:
     if isinstance(param_info, dict):
         logger.info(f"Model: {config['model']['name']}")
         for k, v in param_info.items():
-            logger.info(f"  {k}: {v:,}")
+            if isinstance(v, int):
+                logger.info(f"  {k}: {v:,}")
+            else:
+                logger.info(f"  {k}: {v}")
     else:
         logger.info(f"Model: {config['model']['name']}, params: {param_info:,}")
 
     # 7. 构建数据加载器和优化器
-    train_loader = BPRBatchLoader(
-        train_pairs=train_pairs,
-        train_user_items=train_user_items,
-        num_items=num_items,
-        batch_size=config["training"]["batch_size"],
-        seed=config["seed"],
-        device=device,
-    )
+    # Full 模型使用语义硬负采样
+    use_hard_neg = config["model"]["name"] == "LightGCN_LLM_Full"
+    if use_hard_neg:
+        import pickle, numpy as np
+        topk_path = Path(config["data"]["data_dir"]) / "semantic_topk.pkl"
+        try:
+            with open(topk_path, "rb") as f:
+                sem_topk = pickle.load(f)["indices"]
+            logger.info(f"Loaded semantic top-k neighbors: {sem_topk.shape}")
+        except FileNotFoundError:
+            logger.warning(f"semantic_topk.pkl not found, falling back to random neg.")
+            sem_topk = None
+
+        train_loader = HardBPRBatchLoader(
+            train_pairs=train_pairs,
+            train_user_items=train_user_items,
+            num_items=num_items,
+            batch_size=config["training"]["batch_size"],
+            seed=config["seed"],
+            device=device,
+            semantic_topk=np.array(sem_topk) if sem_topk is not None else None,
+            hard_neg_prob=config["model"].get("hard_neg_prob", 0.5),
+        )
+    else:
+        train_loader = BPRBatchLoader(
+            train_pairs=train_pairs,
+            train_user_items=train_user_items,
+            num_items=num_items,
+            batch_size=config["training"]["batch_size"],
+            seed=config["seed"],
+            device=device,
+        )
     steps_per_epoch = len(train_loader)
     optimizer = model.configure_optimizers()
     early_stopping = EarlyStopping(

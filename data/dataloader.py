@@ -151,6 +151,86 @@ class PointwiseTrainDataset(Dataset):
         return samples[idx_in_group]
 
 
+# ── 语义硬负采样 BPR 加载器 ────────────────────────────────
+
+
+class HardBPRBatchLoader(BPRBatchLoader):
+    """带语义硬负采样的 BPR 加载器。
+
+    在随机负采样的基础上，以一定概率从物品的 LLM 语义近邻中选择负样本，
+    让模型在训练时面对更困难的区分任务。
+
+    Parameters
+    ----------
+    semantic_topk : ndarray [num_items, top_k]
+        每个物品的 top-K 语义近邻索引（预计算）。
+    hard_neg_prob : float
+        使用语义硬负采样的概率（0~1）。
+    """
+
+    def __init__(
+        self,
+        train_pairs: List[Interaction],
+        train_user_items: Dict[int, set],
+        num_items: int,
+        batch_size: int,
+        seed: int = 2024,
+        device: str = "cpu",
+        semantic_topk: np.ndarray | None = None,
+        hard_neg_prob: float = 0.5,
+    ) -> None:
+        super().__init__(train_pairs, train_user_items, num_items, batch_size, seed, device)
+        self.semantic_topk = semantic_topk
+        self.hard_neg_prob = hard_neg_prob
+        self._topk_size = semantic_topk.shape[1] if semantic_topk is not None else 0
+
+    def _sample_hard_neg(self, pos_item: int, user_seen: set) -> int:
+        """从 pos_item 的语义近邻中选一个用户未交互的物品作为硬负样本。"""
+        candidates = self.semantic_topk[pos_item]  # [K]
+        # 随机打乱候选顺序
+        shuffled = self.np_rng.permutation(candidates)
+        for cand in shuffled:
+            if cand not in user_seen:
+                return int(cand)
+        # 所有 top-k 邻居都已被交互 → 回退到随机
+        return None
+
+    def _sample_batch(self):
+        indices = self.np_rng.randint(0, self._num_pairs, self.batch_size)
+        users = []
+        pos_items = []
+        neg_items = []
+
+        for idx in indices:
+            user, pos_item = self.train_pairs[idx]
+            user_seen = self.train_user_items.get(user, set())
+
+            # 以 hard_neg_prob 的概率使用语义硬负采样
+            if self.semantic_topk is not None and self.np_rng.random() < self.hard_neg_prob:
+                hard_neg = self._sample_hard_neg(pos_item, user_seen)
+                if hard_neg is not None:
+                    neg_item = hard_neg
+                else:
+                    # 回退到随机
+                    neg_item = self.np_rng.randint(0, self.num_items)
+                    while neg_item in user_seen:
+                        neg_item = self.np_rng.randint(0, self.num_items)
+            else:
+                neg_item = self.np_rng.randint(0, self.num_items)
+                while neg_item in user_seen:
+                    neg_item = self.np_rng.randint(0, self.num_items)
+
+            users.append(user)
+            pos_items.append(pos_item)
+            neg_items.append(neg_item)
+
+        return (
+            torch.tensor(users, dtype=torch.long, device=self.device),
+            torch.tensor(pos_items, dtype=torch.long, device=self.device),
+            torch.tensor(neg_items, dtype=torch.long, device=self.device),
+        )
+
+
 # ── 便捷函数 ─────────────────────────────────────────────
 
 
