@@ -38,8 +38,10 @@ from data.dataloader import BPRBatchLoader, HardBPRBatchLoader, build_normalized
 from data.preprocess import load_movielens, leave_one_out_split, save_processed_data
 from data.rlmrec_loader import load_rlmrec_data, RLMRecData
 from models.baselines.lightgcn import LightGCN
-from models.baselines.mf import MF, MF_LLM, MF_LLM_HardBPR
-from models.baselines.sgl import SGL, SGL_LLM, SGL_LLM_HardBPR
+from models.baselines.mf import MF, MF_HardBPR, MF_LLM, MF_LLM_HardBPR
+from models.baselines.ngcf import NGCF, NGCF_HardBPR
+from models.baselines.sgl import SGL, SGL_HardBPR, SGL_LLM, SGL_LLM_HardBPR
+from models.llm_enhanced.lightgcn_hardbpr import LightGCN_HardBPR
 from models.llm_enhanced.lightgcn_llm import LightGCN_LLM
 from models.llm_enhanced.lightgcn_llm_distill import LightGCN_LLM_Distill
 from models.llm_enhanced.lightgcn_llm_hardbpr import LightGCN_LLM_HardBPR
@@ -71,6 +73,10 @@ def build_model(
     # MF variants
     if model_name == "MF":
         return MF(num_users, num_items, model_cfg, norm_adj)
+    elif model_name == "MF_HardBPR":
+        item_llm = llm_data.llm_item_emb if llm_data else None
+        return MF_HardBPR(num_users, num_items, model_cfg, norm_adj,
+                          llm_item_emb=item_llm)
     elif model_name == "MF_LLM":
         if llm_data is None:
             raise ValueError("MF_LLM requires llm_data.")
@@ -96,8 +102,19 @@ def build_model(
         return SGL_LLM_HardBPR(num_users, num_items, model_cfg, norm_adj,
                                llm_user_emb=llm_data.llm_user_emb, llm_item_emb=llm_data.llm_item_emb)
 
+    if model_name == "SGL":
+        return SGL(num_users, num_items, model_cfg, norm_adj)
+    elif model_name == "SGL_HardBPR":
+        item_llm = llm_data.llm_item_emb if llm_data else None
+        return SGL_HardBPR(num_users, num_items, model_cfg, norm_adj,
+                           llm_item_emb=item_llm)
+
     if model_name == "LightGCN":
         return LightGCN(num_users, num_items, model_cfg, norm_adj)
+    elif model_name == "LightGCN_HardBPR":
+        item_llm = llm_data.llm_item_emb if llm_data else None
+        return LightGCN_HardBPR(num_users, num_items, model_cfg, norm_adj,
+                                llm_item_emb=item_llm)
 
     elif model_name == "LightGCN_LLM":
         if llm_data is None:
@@ -151,9 +168,17 @@ def build_model(
             freeze_llm=config.get("model", {}).get("freeze_llm", True),
         )
 
+    # NGCF variants
+    elif model_name == "NGCF":
+        return NGCF(num_users, num_items, model_cfg, norm_adj)
+    elif model_name == "NGCF_HardBPR":
+        item_llm = llm_data.llm_item_emb if llm_data else None
+        return NGCF_HardBPR(num_users, num_items, model_cfg, norm_adj,
+                            llm_item_emb=item_llm)
+
     else:
         raise ValueError(
-            f"Unknown model: {model_name}. Supported: LightGCN, LightGCN_LLM, LightGCN_LLM_Distill, LightGCN_LLM_HardBPR, LightGCN_LLM_Full"
+            f"Unknown model: {model_name}."
         )
 
 

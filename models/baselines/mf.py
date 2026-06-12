@@ -120,3 +120,42 @@ class MF_LLM_HardBPR(MF_LLM):
         d = super().count_parameters()
         d["hard_bpr_mode"] = self.hard_bpr_mode
         return d
+
+
+class MF_HardBPR(MF):
+    """纯 MF + 语义感知 BPR（LLM 仅用于 loss 加权，不注入特征层）。"""
+
+    def __init__(self, num_users, num_items, config, norm_adj=None,
+                 llm_item_emb=None):
+        super().__init__(num_users, num_items, config, norm_adj)
+        self.hard_bpr_beta = config.get("hard_bpr_beta", 0.5)
+        if llm_item_emb is not None:
+            self.register_buffer("_llm_item_norm",
+                                 F.normalize(llm_item_emb.float(), p=2, dim=1))
+        else:
+            self._llm_item_norm = None
+
+    def compute_loss(self, batch, **kwargs):
+        users, pos_items, neg_items = batch
+        u = self.user_embedding(users)
+        pi = self.item_embedding(pos_items)
+        ni = self.item_embedding(neg_items)
+        pos_s = (u * pi).sum(dim=1)
+        neg_s = (u * ni).sum(dim=1)
+
+        if self._llm_item_norm is not None:
+            sem = (self._llm_item_norm[pos_items] *
+                   self._llm_item_norm[neg_items]).sum(dim=1)
+            w = 1.0 + self.hard_bpr_beta * sem
+            ranking_loss = -(w * F.logsigmoid(pos_s - neg_s)).mean()
+        else:
+            ranking_loss = -F.logsigmoid(pos_s - neg_s).mean()
+
+        reg_loss = l2_reg_loss([
+            self.user_embedding(users), self.item_embedding(pos_items),
+            self.item_embedding(neg_items)], reduction="mean")
+        return ranking_loss + self.reg_weight * reg_loss
+
+    def count_parameters(self):
+        return {"total_trainable": super().count_parameters(),
+                "llm_in_loss_only": "yes, frozen"}

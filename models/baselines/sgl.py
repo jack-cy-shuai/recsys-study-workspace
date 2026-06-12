@@ -174,3 +174,49 @@ class SGL_LLM_HardBPR(SGL_LLM):
         cl = self._contrastive_loss(u1, u2) + self._contrastive_loss(i1, i2)
 
         return ranking_loss + reg_weight * reg_loss + self.cl_weight * cl
+
+
+class SGL_HardBPR(SGL):
+    """纯 SGL + 语义感知 BPR（LLM 仅用于 loss 加权）。"""
+
+    def __init__(self, num_users, num_items, config, norm_adj,
+                 llm_item_emb=None):
+        super().__init__(num_users, num_items, config, norm_adj)
+        self.hard_bpr_beta = config.get("hard_bpr_beta", 0.5)
+        if llm_item_emb is not None:
+            self.register_buffer("_llm_item_norm",
+                                 F.normalize(llm_item_emb.float(), p=2, dim=1))
+        else:
+            self._llm_item_norm = None
+
+    def compute_loss(self, batch, **kwargs):
+        users, pos_items, neg_items = batch
+
+        # BPR (standard propagation)
+        pos_s = self.forward(users, pos_items)
+        neg_s = self.forward(users, neg_items)
+
+        if self._llm_item_norm is not None:
+            sem = (self._llm_item_norm[pos_items] *
+                   self._llm_item_norm[neg_items]).sum(dim=1)
+            w = 1.0 + self.hard_bpr_beta * sem
+            ranking_loss = -(w * F.logsigmoid(pos_s - neg_s)).mean()
+        else:
+            ranking_loss = -F.logsigmoid(pos_s - neg_s).mean()
+
+        reg_loss = l2_reg_loss([
+            self.user_embedding(users), self.item_embedding(pos_items),
+            self.item_embedding(neg_items)], reduction="mean")
+        reg_weight = kwargs.get("reg_weight", self.reg_weight)
+
+        # Contrastive
+        u1, i1 = self._propagate_with_dropout()
+        u2, i2 = self._propagate_with_dropout()
+        cl = self._contrastive_loss(u1, u2) + self._contrastive_loss(i1, i2)
+
+        return ranking_loss + reg_weight * reg_loss + self.cl_weight * cl
+
+    def count_parameters(self):
+        return {"total_trainable": sum(p.numel() for p in self.parameters()
+                                       if p.requires_grad),
+                "llm_in_loss_only": "yes, frozen"}
