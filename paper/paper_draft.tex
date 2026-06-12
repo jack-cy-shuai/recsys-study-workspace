@@ -127,12 +127,7 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
 
 \begin{figure}[ht]
     \centering
-    \fbox{\parbox{0.8\textwidth}{
-        \vspace{3cm}
-        \centering
-        [梯度分布直方图：标准 BPR vs 语义感知 BPR]
-        \vspace{0.5cm}
-    }}
+    \includegraphics[width=0.95\textwidth]{fig_gradient.pdf}
     \caption{标准 BPR 与语义感知 BPR 的梯度分布对比。标准 BPR（左）大部分样本梯度接近于零；语义感知 BPR（右）通过对语义困难的样本加权，梯度分布更加均匀。}
     \label{fig:grad}
 \end{figure}
@@ -171,13 +166,8 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
 
 \begin{figure}[ht]
     \centering
-    \fbox{\parbox{0.85\textwidth}{
-        \vspace{1.5cm}
-        \centering
-        [训练流程示意图：ID Emb + Proj(LLM) → 图传播 → BPR 前向 → 语义相似度加权 → Loss]
-        \vspace{0.5cm}
-    }}
-    \caption{语义感知 BPR 的训练流程。在标准 LightGCN-LLM 训练中，仅改动损失层的权重计算（红色框），其余部分（特征融合、图传播、负采样）均保持不变。}
+    \includegraphics[width=0.95\textwidth]{fig_framework.pdf}
+    \caption{语义感知 BPR 的训练流程。在标准 LightGCN-LLM 训练中，仅改动损失层的权重计算（红色虚线框），其余部分（特征融合、图传播、负采样）均保持不变。}
     \label{fig:framework}
 \end{figure}
 
@@ -309,13 +299,8 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
 
 \begin{figure}[ht]
     \centering
-    \fbox{\parbox{0.8\textwidth}{
-        \vspace{2cm}
-        \centering
-        [分组柱状图：LGC / +LLM / +HardBPR-W 在冷/温/热三组的 Recall@20]
-        \vspace{0.5cm}
-    }}
-    \caption{不同用户组上的 Recall@20 对比}
+    \includegraphics[width=0.95\textwidth]{fig_coldhot.pdf}
+    \caption{不同用户组上的 Recall@20 对比。Cold: \textless5 训练交互，Warm: 5--20，Hot: \textgreater20。柱上方标注了 +HardBPR-W 相对于 +LLM 的提升百分比。}
     \label{fig:cold_hot}
 \end{figure}
 
