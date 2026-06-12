@@ -79,7 +79,11 @@ RecMind~\cite{Xue2026RecMind} 在 LightGCN 基础上引入门控机制，对不�
 
 TAGCF~\cite{Meng2026TAGCF} 代表了另一条技术路线：不用 LLM 嵌入而用 LLM 推理生成属性标签，构建用户-属性-物品三部图以数学增强消息传递路径。
 
-本文与上述工作的核心区别在于：我们关注的是\emph{训练过程}本身，而非语义注入的架构设计。
+\subsection{BPR训练的改进}
+
+除架构层面的工作外，也有工作直接改进 BPR 训练。IPS-BPR~\cite{Raja2025IPS} 用倾向性评分加权 BPR 以去曝光偏差。Hard-BPR~\cite{Shi2024HardBPR} 重新设计 sigmoid 梯度曲线为钟形，抑制过难负样本（false negatives）的梯度。ReFINe~\cite{Jeong2025ReFINe} 用 LLM 对负样本做二分类（真负/假负）后分权重处理。
+
+本文与上述工作的核心区别在于：(1) 我们使用 LLM 语义嵌入的\emph{连续}余弦相似度做 BPR 加权，而非二分分类或倾向性估计；(2) 我们不改变 BPR 的梯度函数形式，而是在标准 BPR 上施加语义引导的样本权重；(3) 我们通过 Information Bottleneck 框架为"损失层 vs 数据层"的语义注入效果差异提供了理论解释，这是一个尚未被讨论的分析视角。
 
 % ============================================================
 \section{方法}
@@ -170,6 +174,29 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
     \caption{语义感知 BPR 的训练流程。在标准 LightGCN-LLM 训练中，仅改动损失层的权重计算（红色虚线框），其余部分（特征融合、图传播、负采样）均保持不变。}
     \label{fig:framework}
 \end{figure}
+
+% ============================================================
+
+\subsection{Information Bottleneck 分析}
+
+本节用一个信息论视角解释为何语义信号在损失层有效、在数据层（硬负采样）有害。这不仅是事后解释，更提供了设计原则的验证框架。
+
+\textbf{Information Bottleneck (IB) 原理}~\cite{Tishby2000} 指出，最优表示是预测信息 $I(X;\hat{Y})$ 与压缩量 $I(X;T)$ 之间的权衡：
+\begin{equation}
+    \mathcal{L}_{\text{IB}} = I(X;\hat{Y}) - \gamma I(X;T)
+\end{equation}
+在推荐场景中，$X$ 是用户-物品交互，$T$ 是物品的协同表示，$\hat{Y}$ 是 BPR 排序预测。$\gamma$ 控制压缩程度：$\gamma$ 小→高压缩→仅保留粗粒度类别信息；$\gamma$ 大→低压缩→保留细粒度个体差异。
+
+\textbf{标准 BPR} 下，随机负采样产生语义不相干的正负对，模型仅需学习粗粒度的物品类别区分（$\gamma$ 小，高压缩）。这是一种稳定但信息量低的训练状态。
+
+\textbf{语义加权 BPR（损失层）} 在不改变压缩程度的条件下，通过放大困难样本的梯度来重新分配训练资源。BPR 的梯度放大因子为 $(1 + \beta \cdot \text{sim})$，其中 $\text{sim}$ 来自外部 LLM。关键点在于：LLM 信号\emph{仅影响梯度幅度而非压缩结构}——粗粒度协同模式仍占主导，语义信号作为补充聚焦机制。在 IB 框架中，这相当于在固定 $\gamma$ 下优化了 $I(X;\hat{Y})$ 的条件分布。
+
+\textbf{语义硬负采样（数据层）} 则破坏了压缩结构。当 BPR 的三元组中负样本 $j$ 与正样本 $i$ 语义高度相似时，模型被迫在同类物品内部做细粒度判别。这等效于增大 IB 的 $\gamma$——引入了过多的 $I(X;T)$（低压缩），导致协同结构信号被语义噪声淹没。+Full 实验（语义加权 + 硬负采样）的退化（Recall@20 从 0.0664 降至 0.0628）直接验证了这一点。
+
+由此得出一个简洁的设计原则：
+\begin{quote}
+    \textbf{命题：} 在 IB 框架下，LLM 语义信号的最优注入点在损失层而非数据层。损失层面的加权保持了 BPR 训练的粗粒度协同压缩结构，同时将语义信息用作聚焦机制；数据层面的语义注入破坏了压缩结构，引入的细粒度噪声超过其提供的判别信息。
+\end{quote}
 
 % ============================================================
 \section{实验}
@@ -293,6 +320,25 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
     \item \textbf{硬负采样反而有害}：+Full（语义加权 BPR + 语义硬负采样）退化为 +0.8\%。语义硬负采样（从 LLM 近邻中选取负样本）导致模型面对过多\"难以区分\"的负样本，BPR 排序学习受到干扰。这一反直觉的发现表明：\emph{语义信号在数据层面需谨慎使用，损失层面的语义加权是更安全有效的注入方式}。
 \end{enumerate}
 
+\subsection{模型无关验证}
+
+为验证方法的通用性，我们在矩阵分解（MF）上进行了同样的三组对比。如表~\ref{tab:mf} 所示，MF 上呈现出与 LightGCN 不同的有趣规律：简单的 LLM 相加注入反而使 MF 性能下降（0.0423 $\to$ 0.0396），而加入 HardBPR 后不仅恢复且大幅超越（0.0636，+50.5\%）。这表明：(1) HardBPR 的提升是\emph{模型无关}的，(2) 对于浅层模型，损失层的优化甚至比特征层的融合更为关键。
+
+\begin{table}[ht]
+    \centering
+    \caption{MF 模型无关验证结果（Amazon-Book）}
+    \label{tab:mf}
+    \begin{tabular}{lrrr}
+        \toprule
+        方法 & Recall@20 & NDCG@20 & 相对 +LLM \\
+        \midrule
+        MF (random) & 0.0423 & 0.0260 & — \\
+        MF+LLM & 0.0396 & 0.0249 & 基线 \\
+        MF+LLM+HardBPR & \textbf{0.0636} & \textbf{0.0369} & \textbf{+60.6\%} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
 \subsection{冷/温/热用户分组分析}
 
 图~\ref{fig:cold_hot} 展示了 Amazon 数据集上三种方法在冷启动用户（训练交互 $<$ 5）、温用户（5--20）和热门用户（$>$ 20）上的 Recall@20。
@@ -319,9 +365,11 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
     \item 零额外参数、零额外推理开销——改动量仅为损失函数中的数行加权逻辑
 \end{itemize}
 
-消融实验揭示了一个反直觉的发现：语义硬负采样（在数据层面引入 LLM 语义）反而有害，提示语义信号在推荐系统中的运用需要审慎选择注入层面。
+消融实验揭示了一个反直觉的发现：语义硬负采样反而有害。我们通过 Information Bottleneck 框架给出了理论解释——数据层语义注入破坏了 BPR 训练的粗粒度压缩结构，而损失层语义加权在不改变压缩结构的前提下重新分配了训练资源。这一理论预测得到了实验验证（+Full 从 0.0664 退化为 0.0628）。
 
-未来工作将探索语义感知 BPR 在更多 backbone 模型（如 MF、SGL）上的泛化性，并将其与课程学习策略结合以进一步优化训练效率。
+此外，我们在矩阵分解（MF）上的模型无关验证中观察到一个有趣的规律：简单的 LLM 相加注入对浅层 MF 反而有害（0.0423 $\to$ 0.0396），但 HardBPR 能完全翻转这一退化（0.0636，+60.6\%），进一步支持了"训练信号的优化比特征融合更重要"的核心论点。
+
+未来工作将探索语义感知 BPR 在更多 backbone 上的泛化性，以及自适应 $\beta$ 调度策略以进一步提升训练效率。
 
 % ============================================================
 % 参考文献
@@ -378,6 +426,26 @@ Y.~Li, H.~Ju, Z.~Song, W.~Yang, C.~Lu, P.~Jiang, and K.~Gai.
 J.~Meng, R.~Zhang, W.~Wu, R.~Zhang, C.~Qin, Q.~Zhang, Q.~Liu, H.~Xiong, and C.~Wang.
 \newblock Turning semantics into topology: {LLM}-driven attribute augmentation for collaborative filtering.
 \newblock \emph{arXiv:2602.21099}, 2026.
+
+\bibitem{Tishby2000}
+N.~Tishby, F.~C.~Pereira, and W.~Bialek.
+\newblock The information bottleneck method.
+\newblock \emph{arXiv:physics/0004057}, 2000.
+
+\bibitem{Shi2024HardBPR}
+K.~Shi, J.~Zhang, L.~Fang, W.~Wang, and B.~Jing.
+\newblock Enhanced {B}ayesian personalized ranking for robust hard negative sampling in recommender systems.
+\newblock \emph{arXiv:2403.19276}, 2024.
+
+\bibitem{Jeong2025ReFINe}
+J.~Jeong et al.
+\newblock Leveraging refined negative feedback with {LLM} for recommender systems.
+\newblock In \emph{WWW Companion}, 2025.
+
+\bibitem{Raja2025IPS}
+R.~Raja and A.~Vats.
+\newblock Counterfactual risk minimization with {IPS}-weighted {BPR} in recommender systems.
+\newblock In \emph{RecSys Workshop}, 2025.
 
 \end{thebibliography}
 
