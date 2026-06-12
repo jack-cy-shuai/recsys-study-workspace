@@ -38,6 +38,8 @@ from data.dataloader import BPRBatchLoader, HardBPRBatchLoader, build_normalized
 from data.preprocess import load_movielens, leave_one_out_split, save_processed_data
 from data.rlmrec_loader import load_rlmrec_data, RLMRecData
 from models.baselines.lightgcn import LightGCN
+from models.baselines.mf import MF, MF_LLM, MF_LLM_HardBPR
+from models.baselines.sgl import SGL, SGL_LLM, SGL_LLM_HardBPR
 from models.llm_enhanced.lightgcn_llm import LightGCN_LLM
 from models.llm_enhanced.lightgcn_llm_distill import LightGCN_LLM_Distill
 from models.llm_enhanced.lightgcn_llm_hardbpr import LightGCN_LLM_HardBPR
@@ -65,6 +67,34 @@ def build_model(
     """
     model_cfg = {**config.get("model", {}), **config.get("training", {}),
                  "device": config.get("device", "cpu")}
+
+    # MF variants
+    if model_name == "MF":
+        return MF(num_users, num_items, model_cfg, norm_adj)
+    elif model_name == "MF_LLM":
+        if llm_data is None:
+            raise ValueError("MF_LLM requires llm_data.")
+        return MF_LLM(num_users, num_items, model_cfg, norm_adj,
+                      llm_user_emb=llm_data.llm_user_emb,
+                      llm_item_emb=llm_data.llm_item_emb)
+    elif model_name == "MF_LLM_HardBPR":
+        if llm_data is None:
+            raise ValueError("MF_LLM_HardBPR requires llm_data.")
+        return MF_LLM_HardBPR(num_users, num_items, model_cfg, norm_adj,
+                              llm_user_emb=llm_data.llm_user_emb,
+                              llm_item_emb=llm_data.llm_item_emb)
+
+    # SGL variants
+    if model_name == "SGL":
+        return SGL(num_users, num_items, model_cfg, norm_adj)
+    elif model_name == "SGL_LLM":
+        if llm_data is None: raise ValueError("SGL_LLM requires llm_data.")
+        return SGL_LLM(num_users, num_items, model_cfg, norm_adj,
+                       llm_user_emb=llm_data.llm_user_emb, llm_item_emb=llm_data.llm_item_emb)
+    elif model_name == "SGL_LLM_HardBPR":
+        if llm_data is None: raise ValueError("SGL_LLM_HardBPR requires llm_data.")
+        return SGL_LLM_HardBPR(num_users, num_items, model_cfg, norm_adj,
+                               llm_user_emb=llm_data.llm_user_emb, llm_item_emb=llm_data.llm_item_emb)
 
     if model_name == "LightGCN":
         return LightGCN(num_users, num_items, model_cfg, norm_adj)
