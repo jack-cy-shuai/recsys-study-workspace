@@ -1,0 +1,81 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{Koren2009}
+\citation{He2017NCF}
+\citation{He2020LightGCN}
+\citation{Ren2024RLMRec}
+\citation{Zhang2025LLMInit}
+\citation{Xue2026RecMind}
+\citation{Peng2024DALR}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{Koren2009}
+\citation{Rendle2009}
+\citation{He2017NCF}
+\citation{He2020LightGCN}
+\citation{Ren2024RLMRec}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Collaborative Filtering and LightGCN}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}LLM-Enhanced Recommendation}{2}{subsection.2.2}\protected@file@percent }
+\citation{Zhang2025LLMInit}
+\citation{Xue2026RecMind}
+\citation{Peng2024DALR}
+\citation{Li2026RecGOAT}
+\citation{Meng2026TAGCF}
+\citation{Raja2025IPS}
+\citation{Shi2024HardBPR}
+\citation{Jeong2025ReFINe}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Improving BPR Training}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Preliminaries: LightGCN}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Standard BPR and Its Bottleneck}{4}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Gradient distribution comparison. Standard BPR (left): most samples have near-zero gradients. HardBPR (right): semantic reweighting produces a more uniform gradient distribution by amplifying hard samples.}}{4}{figure.1}\protected@file@percent }
+\newlabel{fig:grad}{{1}{4}{Gradient distribution comparison. Standard BPR (left): most samples have near-zero gradients. HardBPR (right): semantic reweighting produces a more uniform gradient distribution by amplifying hard samples}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}HardBPR: Semantic-Aware BPR Reweighting}{4}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Weighted HardBPR}{4}{subsubsection.3.3.1}\protected@file@percent }
+\citation{Tishby2000}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Margin HardBPR (Ablation)}{5}{subsubsection.3.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces HardBPR training pipeline. The forward pass (ID embedding $\to $ graph propagation $\to $ inner product) is identical to standard LightGCN. The only modification is in the loss layer (red dashed box): frozen LLM semantic embeddings compute pairwise cosine similarity, which reweights the BPR loss.}}{5}{figure.2}\protected@file@percent }
+\newlabel{fig:framework}{{2}{5}{HardBPR training pipeline. The forward pass (ID embedding $\to $ graph propagation $\to $ inner product) is identical to standard LightGCN. The only modification is in the loss layer (red dashed box): frozen LLM semantic embeddings compute pairwise cosine similarity, which reweights the BPR loss}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Information Bottleneck Analysis}{5}{subsection.3.4}\protected@file@percent }
+\citation{Ren2024RLMRec}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{6}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Experimental Setup}{6}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Datasets.}{6}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Evaluation Protocol.}{6}{section*.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Dataset statistics.}}{7}{table.1}\protected@file@percent }
+\newlabel{tab:datasets}{{1}{7}{Dataset statistics}{table.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Hyperparameters.}{7}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Compared Methods.}{7}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Main Results}{7}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces LightGCN results across three datasets: standard BPR vs.\ HardBPR.}}{7}{table.2}\protected@file@percent }
+\newlabel{tab:main}{{2}{7}{LightGCN results across three datasets: standard BPR vs.\ HardBPR}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Relative improvement of HardBPR over standard BPR (\%).}}{8}{table.3}\protected@file@percent }
+\newlabel{tab:relative}{{3}{8}{Relative improvement of HardBPR over standard BPR (\%)}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Ablation Study}{8}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Ablation results on Amazon-Book.}}{8}{table.4}\protected@file@percent }
+\newlabel{tab:ablation}{{4}{8}{Ablation results on Amazon-Book}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Model-Agnostic Validation}{8}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Model-agnostic validation (Amazon-Book, Recall@20).}}{9}{table.5}\protected@file@percent }
+\newlabel{tab:mf}{{5}{9}{Model-agnostic validation (Amazon-Book, Recall@20)}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Cold/Warm/Hot User Analysis}{9}{subsection.4.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Recall@20 comparison across user groups stratified by training interaction count.}}{9}{figure.3}\protected@file@percent }
+\newlabel{fig:cold_hot}{{3}{9}{Recall@20 comparison across user groups stratified by training interaction count}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{9}{section.5}\protected@file@percent }
+\bibcite{Koren2009}{{1}{}{{}}{{}}}
+\bibcite{Rendle2009}{{2}{}{{}}{{}}}
+\bibcite{He2017NCF}{{3}{}{{}}{{}}}
+\bibcite{He2020LightGCN}{{4}{}{{}}{{}}}
+\bibcite{Ren2024RLMRec}{{5}{}{{}}{{}}}
+\bibcite{Zhang2025LLMInit}{{6}{}{{}}{{}}}
+\bibcite{Xue2026RecMind}{{7}{}{{}}{{}}}
+\bibcite{Peng2024DALR}{{8}{}{{}}{{}}}
+\bibcite{Li2026RecGOAT}{{9}{}{{}}{{}}}
+\bibcite{Meng2026TAGCF}{{10}{}{{}}{{}}}
+\bibcite{Tishby2000}{{11}{}{{}}{{}}}
+\bibcite{Shi2024HardBPR}{{12}{}{{}}{{}}}
+\bibcite{Jeong2025ReFINe}{{13}{}{{}}{{}}}
+\bibcite{Raja2025IPS}{{14}{}{{}}{{}}}
+\providecommand\NAT@force@numbers{}\NAT@force@numbers
+\gdef \@abspage@last{11}

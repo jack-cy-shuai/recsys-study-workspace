@@ -28,48 +28,47 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}LLM 增强推荐系统}{2}{subsection.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}BPR训练的改进}{2}{subsection.2.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}方法}{3}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}基础框架：LightGCN-LLM}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}基础框架：LightGCN}{3}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}标准 BPR 及其瓶颈}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}语义感知 BPR}{3}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}语义加权 BPR（HardBPR-Weight）}{3}{subsubsection.3.3.1}\protected@file@percent }
-\citation{Tishby2000}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces 标准 BPR 与语义感知 BPR 的梯度分布对比。标准 BPR（左）大部分样本梯度接近于零；语义感知 BPR（右）通过对语义困难的样本加权，梯度分布更加均匀。}}{4}{figure.1}\protected@file@percent }
-\newlabel{fig:grad}{{1}{4}{标准 BPR 与语义感知 BPR 的梯度分布对比。标准 BPR（左）大部分样本梯度接近于零；语义感知 BPR（右）通过对语义困难的样本加权，梯度分布更加均匀。}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces 标准 BPR 与语义感知 BPR 的梯度分布对比。标准 BPR（左）大部分样本梯度接近于零；语义感知 BPR（右）通过对语义困难的样本加权，梯度分布更加均匀。}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:grad}{{1}{3}{标准 BPR 与语义感知 BPR 的梯度分布对比。标准 BPR（左）大部分样本梯度接近于零；语义感知 BPR（右）通过对语义困难的样本加权，梯度分布更加均匀。}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}语义感知 BPR}{4}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}语义加权 BPR（HardBPR-Weight）}{4}{subsubsection.3.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}语义边际 BPR（HardBPR-Margin）}{4}{subsubsection.3.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Information Bottleneck 分析}{4}{subsection.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces HardBPR 的训练流程。模型前向传播（ID 嵌入 $\to $ 图传播 $\to $ 内积预测）与标准 LightGCN 完全相同。唯一改动在损失层（红色虚线框）：利用冻结的 LLM 语义嵌入计算正负样本对之间的语义相似度，并据此重分配 BPR 权重。}}{4}{figure.2}\protected@file@percent }
+\newlabel{fig:framework}{{2}{4}{HardBPR 的训练流程。模型前向传播（ID 嵌入 $\to $ 图传播 $\to $ 内积预测）与标准 LightGCN 完全相同。唯一改动在损失层（红色虚线框）：利用冻结的 LLM 语义嵌入计算正负样本对之间的语义相似度，并据此重分配 BPR 权重。}{figure.2}{}}
+\citation{Tishby2000}
 \citation{Ren2024RLMRec}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces 语义感知 BPR 的训练流程。在标准 LightGCN-LLM 训练中，仅改动损失层的权重计算（红色虚线框），其余部分（特征融合、图传播、负采样）均保持不变。}}{5}{figure.2}\protected@file@percent }
-\newlabel{fig:framework}{{2}{5}{语义感知 BPR 的训练流程。在标准 LightGCN-LLM 训练中，仅改动损失层的权重计算（红色虚线框），其余部分（特征融合、图传播、负采样）均保持不变。}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Information Bottleneck 分析}{5}{subsection.3.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}实验}{5}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}实验设置}{5}{subsection.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{数据集}{5}{section*.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces 数据集统计信息}}{5}{table.1}\protected@file@percent }
 \newlabel{tab:datasets}{{1}{5}{数据集统计信息}{table.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{评估协议}{6}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{评估协议}{5}{section*.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{超参数}{6}{section*.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{对比方法}{6}{section*.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}整体结果}{6}{subsection.4.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces 三个数据集上的测试集结果。最佳结果以粗体标出。}}{6}{table.2}\protected@file@percent }
-\newlabel{tab:main}{{2}{6}{三个数据集上的测试集结果。最佳结果以粗体标出。}{table.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}相对提升分析}{6}{subsection.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces +HardBPR-W 相对于 +LLM 的相对提升（\%）}}{7}{table.3}\protected@file@percent }
-\newlabel{tab:relative}{{3}{7}{+HardBPR-W 相对于 +LLM 的相对提升（\%）}{table.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}消融实验}{7}{subsection.4.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Amazon-Book 消融实验结果}}{7}{table.4}\protected@file@percent }
-\newlabel{tab:ablation}{{4}{7}{Amazon-Book 消融实验结果}{table.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}模型无关验证}{7}{subsection.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}冷/温/热用户分组分析}{7}{subsection.4.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces MF 模型无关验证结果（Amazon-Book）}}{8}{table.5}\protected@file@percent }
-\newlabel{tab:mf}{{5}{8}{MF 模型无关验证结果（Amazon-Book）}{table.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 不同用户组上的 Recall@20 对比。Cold: \textless 5 训练交互，Warm: 5--20，Hot: \textgreater 20。柱上方标注了 +HardBPR-W 相对于 +LLM 的提升百分比。}}{8}{figure.3}\protected@file@percent }
-\newlabel{fig:cold_hot}{{3}{8}{不同用户组上的 Recall@20 对比。Cold: \textless 5 训练交互，Warm: 5--20，Hot: \textgreater 20。柱上方标注了 +HardBPR-W 相对于 +LLM 的提升百分比。}{figure.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}结论}{8}{section.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces LightGCN 三数据集：标准 BPR vs HardBPR（本文）。}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:main}{{2}{6}{LightGCN 三数据集：标准 BPR vs HardBPR（本文）。}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces HardBPR 相对于标准 BPR 的相对提升（\%）。}}{6}{table.3}\protected@file@percent }
+\newlabel{tab:relative}{{3}{6}{HardBPR 相对于标准 BPR 的相对提升（\%）。}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}消融实验}{6}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Amazon-Book 消融实验结果。}}{7}{table.4}\protected@file@percent }
+\newlabel{tab:ablation}{{4}{7}{Amazon-Book 消融实验结果。}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}模型无关验证}{7}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces MF 与 NGCF 上的模型无关验证（Amazon-Book，Recall@20）。}}{7}{table.5}\protected@file@percent }
+\newlabel{tab:mf}{{5}{7}{MF 与 NGCF 上的模型无关验证（Amazon-Book，Recall@20）。}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}冷/温/热用户分组分析}{7}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}结论}{7}{section.5}\protected@file@percent }
 \bibcite{Koren2009}{{1}{}{{}}{{}}}
 \bibcite{Rendle2009}{{2}{}{{}}{{}}}
 \bibcite{He2017NCF}{{3}{}{{}}{{}}}
 \bibcite{He2020LightGCN}{{4}{}{{}}{{}}}
 \bibcite{Ren2024RLMRec}{{5}{}{{}}{{}}}
 \bibcite{Zhang2025LLMInit}{{6}{}{{}}{{}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces LightGCN vs HardBPR 在不同训练交互组上的 Recall@20 对比。}}{8}{figure.3}\protected@file@percent }
+\newlabel{fig:cold_hot}{{3}{8}{LightGCN vs HardBPR 在不同训练交互组上的 Recall@20 对比。}{figure.3}{}}
 \bibcite{Xue2026RecMind}{{7}{}{{}}{{}}}
 \bibcite{Peng2024DALR}{{8}{}{{}}{{}}}
 \bibcite{Li2026RecGOAT}{{9}{}{{}}{{}}}
@@ -79,4 +78,4 @@
 \bibcite{Jeong2025ReFINe}{{13}{}{{}}{{}}}
 \bibcite{Raja2025IPS}{{14}{}{{}}{{}}}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\gdef \@abspage@last{10}
+\gdef \@abspage@last{9}
