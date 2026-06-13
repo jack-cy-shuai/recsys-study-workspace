@@ -36,7 +36,7 @@
 \maketitle
 
 \begin{abstract}
-While large language model (LLM) embeddings have been widely adopted to enhance collaborative filtering recommenders, existing work focuses on injecting LLM semantics at the \emph{feature level}, leaving the training signal itself as an independent yet complementary bottleneck. We identify that standard Bayesian Personalized Ranking (BPR) loss treats all positive-negative sample pairs equally, causing roughly 80\% of training iterations to be wasted on distinguishing semantically unrelated ``easy'' negatives (e.g., distinguishing a sci-fi novel from a cookbook). Unlike prior BPR enhancement methods that rely on model-internal scores or propensity estimation, we propose \emph{HardBPR}, which leverages frozen LLM item embeddings to compute pairwise semantic similarity for loss reweighting---without adding parameters, without modifying model architecture, and without any LLM inference overhead. Experiments on three public datasets (Amazon-Book, Steam, Yelp) demonstrate that HardBPR improves Recall@20 by 13.0\% on MF and 44.7\%--101.1\% on LightGCN over standard BPR training, while having negligible effect on models already saturating BPR optimization (e.g., NGCF). We further provide an Information Bottleneck analysis explaining why semantic signals are beneficial at the loss level yet harmful at the data level, establishing a design principle for future semantic enhancement methods.
+While large language model (LLM) embeddings have been widely adopted to enhance collaborative filtering recommenders, existing work focuses on injecting LLM semantics at the \emph{feature level}, leaving the training signal itself as an independent yet complementary bottleneck. We identify that standard Bayesian Personalized Ranking (BPR) loss treats all positive-negative sample pairs equally, causing the majority of training iterations to be spent on distinguishing semantically unrelated ``easy'' negatives (e.g., distinguishing a sci-fi novel from a cookbook). Unlike prior BPR enhancement methods that rely on model-internal scores or propensity estimation, we propose \emph{HardBPR}, which leverages frozen LLM item embeddings to compute pairwise semantic similarity for loss reweighting---without adding parameters, without modifying model architecture, and without any LLM inference overhead. Experiments on three public datasets (Amazon-Book, Steam, Yelp) demonstrate that HardBPR improves Recall@20 by 13.0\% on MF and 44.7\%--101.1\% on LightGCN over standard BPR training, while having negligible effect on models already saturating BPR optimization (e.g., NGCF). We further provide an Information Bottleneck analysis explaining why semantic signals are beneficial at the loss level yet harmful at the data level, establishing a design principle for future semantic enhancement methods.
 \end{abstract}
 
 % ============================================================
@@ -118,7 +118,7 @@ Fig.~\ref{fig:grad} visualizes the gradient distribution: under standard BPR, th
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.95\textwidth]{fig_gradient.pdf}
-    \caption{Gradient distribution comparison. Standard BPR (left): most samples have near-zero gradients. HardBPR (right): semantic reweighting produces a more uniform gradient distribution by amplifying hard samples.}
+    \caption{Conceptual illustration of gradient distributions. Standard BPR (left): most samples cluster near zero gradient. HardBPR (right): semantic reweighting amplifies gradients for semantically challenging pairs, producing a more uniform distribution.}
     \label{fig:grad}
 \end{figure}
 
@@ -177,7 +177,7 @@ In the recommendation context, $X$ denotes user-item interactions, $T$ the item 
 
 \textbf{Weighted HardBPR (loss level)} reallocates training resources by amplifying gradients for hard samples \emph{without} altering the compression structure. The gradient amplification factor is $(1 + \beta \cdot \text{sim})$, where $\text{sim}$ comes from an external frozen LLM. Crucially, the LLM signal affects only the \emph{gradient magnitude}, not the \emph{compression structure}---coarse-grained collaborative patterns still dominate, with semantic signals serving as a supplementary focusing mechanism. In the IB framework, this corresponds to optimizing the conditional distribution of $I(X;\hat{Y})$ under a fixed $\gamma$.
 
-\textbf{Semantic hard negative sampling (data level)} disrupts the compression structure. When BPR triples include negatives $j$ that are semantically highly similar to positives $i$, the model is forced to perform fine-grained discrimination within the same item category. This is equivalent to increasing $\gamma$ in the IB Lagrangian---introducing excessive $I(X;T)$ (low compression), causing the collaborative structure signal to be drowned out by semantic noise. The degradation observed in the +Full experiment (Weighted HardBPR + hard negative sampling) directly validates this prediction.
+\textbf{Semantic hard negative sampling (data level)} disrupts the compression structure. When BPR triples include negatives $j$ that are semantically highly similar to positives $i$, the model is forced to perform fine-grained discrimination within the same item category. This is equivalent to increasing $\gamma$ in the IB Lagrangian---introducing excessive $I(X;T)$ (low compression), causing the collaborative structure signal to be drowned out by semantic noise. The degradation observed in the +Full experiment---HardBPR combined with hard negative sampling drops Recall@20 from 0.0397 to 0.0289---directly validates this prediction.
 
 This yields a concise design principle:
 \begin{quote}
@@ -190,7 +190,7 @@ This yields a concise design principle:
 
 \subsection{Experimental Setup}
 
-\paragraph{Datasets.} We use the three preprocessed datasets released by RLMRec~\cite{Ren2024RLMRec}. All datasets are chronologically split using the leave-one-out protocol, with LLM semantic embedding dimension of 1536. Statistics are shown in Table~\ref{tab:datasets}.
+\paragraph{Datasets.} We use the three preprocessed datasets released by RLMRec~\cite{Ren2024RLMRec}. All datasets are chronologically split using the leave-one-out protocol, with LLM semantic embedding dimension of 1536. Statistics are shown in Table~\ref{tab:datasets}. We note that these are downsampled subsets---the full Amazon-Book dataset contains 526K users; our subset has 11K. Under such extreme sparsity (0.12\% density), the absolute Recall@20 values of all models are lower than those reported in the original LightGCN paper on large-scale data. The relative ranking of methods remains informative and consistent with prior work using these same subsets~\cite{Ren2024RLMRec}.
 
 \begin{table}[ht]
     \centering
@@ -266,7 +266,7 @@ Table~\ref{tab:main} presents the test-set comparison on LightGCN across three d
 
 We conduct four ablations on Amazon to isolate the impact of each design choice (Table~\ref{tab:ablation}). The central comparison is Weighted vs.\ Margin: semantic weighting (+48.7\%) significantly outperforms semantic margin (+2.2\%). The margin variant is effective early in training but later constrains the model's ability to flexibly balance samples of varying difficulty.
 
-We also explore two auxiliary enhancements: hot-to-cold collaborative distillation (+Distill) and semantic hard negative sampling (+Full). Distillation yields marginal gains (only 4.6\% of items are cold-start), while hard negative sampling actually causes \emph{performance degradation}. This directly validates our core thesis: \emph{semantic signals are a safe and effective focusing mechanism at the loss level, but can disrupt coarse-grained collaborative structure learning at the data level}.
+We further explore two auxiliary enhancements: hot-to-cold collaborative distillation (+Distill) and semantic hard negative sampling (+Full). Notably, the gradient-reshaping Hard-BPR~\cite{Shi2024HardBPR} shares our method's name but follows a fundamentally different design: it modifies the sigmoid gradient curve using model-internal scores to suppress false negatives, while HardBPR leverages external frozen LLM embeddings to amplify true hard negatives. The two approaches are orthogonal---future work may investigate combining them. Distillation yields marginal gains (only 4.6\% of items are cold-start), while hard negative sampling actually causes \emph{performance degradation}. This directly validates our core thesis: \emph{semantic signals are a safe and effective focusing mechanism at the loss level, but can disrupt coarse-grained collaborative structure learning at the data level}.
 
 \begin{table}[ht]
     \centering
