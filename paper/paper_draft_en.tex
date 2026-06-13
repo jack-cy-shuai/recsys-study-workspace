@@ -118,7 +118,7 @@ Fig.~\ref{fig:grad} visualizes the gradient distribution: under standard BPR, th
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.95\textwidth]{fig_gradient.pdf}
-    \caption{Conceptual illustration of gradient distributions. Standard BPR (left): most samples cluster near zero gradient. HardBPR (right): semantic reweighting amplifies gradients for semantically challenging pairs, producing a more uniform distribution.}
+    \caption{Real gradient magnitude distributions (100 training batches on Amazon-Book). Standard BPR (left): most gradients are near zero due to easy negatives. HardBPR (right): semantic reweighting amplifies hard negatives, producing a heavier tail of informative gradients.}
     \label{fig:grad}
 \end{figure}
 
