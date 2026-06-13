@@ -89,29 +89,20 @@ TAGCF~\cite{Meng2026TAGCF} 代表了另一条技术路线：不用 LLM 嵌入而
 \section{方法}
 % ============================================================
 
-\subsection{基础框架：LightGCN-LLM}
+\subsection{基础框架：LightGCN}
 
-我们的基础模型是 LightGCN-LLM：在 LightGCN 的图传播中，节点初始嵌入为可学习的 ID 嵌入与可学习的投影层输出的和：
-\begin{equation}
-    \mathbf{E}^{(0)} =
-    \begin{bmatrix}
-        \mathbf{P} + \mathbf{W}_u \mathbf{S}_u \\
-        \mathbf{Q} + \mathbf{W}_i \mathbf{S}_i
-    \end{bmatrix}
-    \in \mathbb{R}^{(N+M) \times d}
-\end{equation}
-其中 $\mathbf{P} \in \mathbb{R}^{N \times d}$ 和 $\mathbf{Q} \in \mathbb{R}^{M \times d}$ 为随机初始化的 ID 嵌入，$\mathbf{S}_u \in \mathbb{R}^{N \times D_{\text{llm}}}$ 和 $\mathbf{S}_i \in \mathbb{R}^{M \times D_{\text{llm}}}$ 为冻结的 LLM 语义嵌入（来自 RLMRec），$\mathbf{W}_u, \mathbf{W}_i \in \mathbb{R}^{D_{\text{llm}} \times d}$ 为可学习投影矩阵。
-
-随后进行 $K$ 层图传播：
+我们以 LightGCN 为基础骨架。LightGCN 是一个纯图协同过滤模型，节点初始嵌入为随机初始化的 ID 嵌入，
+通过 $K$ 层图传播聚合邻居信息：
 \begin{equation}
     \mathbf{E}^{(k+1)} = \tilde{\mathbf{A}} \, \mathbf{E}^{(k)}, \quad k = 0,1,\dots,K-1
 \end{equation}
-其中 $\tilde{\mathbf{A}} = \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2}$ 为对称归一化邻接矩阵。最终表示取各层平均：
+其中 $\tilde{\mathbf{A}} = \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2}$ 为对称归一化邻接矩阵，$\mathbf{E}^{(0)}$ 由均值为 0、标准差 0.1 的正态分布随机初始化。最终表示取各层平均：
 \begin{equation}
     \mathbf{E} = \frac{1}{K+1} \sum_{k=0}^{K} \mathbf{E}^{(k)}
 \end{equation}
-
 预测分数为用户和物品最终嵌入的内积：$\hat{y}_{ui} = \mathbf{e}_u^{\top} \mathbf{e}_i$。
+
+\textbf{关键}：在整个前向传播中，\textbf{不引入任何 LLM 特征}——模型架构与标准 LightGCN 完全相同。LLM 语义嵌入仅在下文的损失函数中担任"语义裁判"角色。
 
 \subsection{标准 BPR 及其瓶颈}
 
@@ -171,7 +162,7 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.95\textwidth]{fig_framework.pdf}
-    \caption{语义感知 BPR 的训练流程。在标准 LightGCN-LLM 训练中，仅改动损失层的权重计算（红色虚线框），其余部分（特征融合、图传播、负采样）均保持不变。}
+    \caption{HardBPR 的训练流程。模型前向传播（ID 嵌入 $\to$ 图传播 $\to$ 内积预测）与标准 LightGCN 完全相同。唯一改动在损失层（红色虚线框）：利用冻结的 LLM 语义嵌入计算正负样本对之间的语义相似度，并据此重分配 BPR 权重。}
     \label{fig:framework}
 \end{figure}
 
@@ -227,12 +218,11 @@ Fig.\ref{fig:grad} 展示了标准 BPR 和本文方法下的梯度分布：标�
 
 \paragraph{对比方法}
 \begin{itemize}
-    \item \textbf{LightGCN（LGC）}：纯随机初始化 ID 嵌入 + 标准 BPR
-    \item \textbf{LightGCN-LLM（+LLM）}：ID 嵌入 + LLM 语义投影（相加融合）+ 标准 BPR
-    \item \textbf{+HardBPR-W}（本文）：ID 嵌入 + LLM 语义投影 + 语义加权 BPR
-    \item \textbf{+HardBPR-M}（本文消融）：ID 嵌入 + LLM 语义投影 + 语义边际 BPR
-    \item \textbf{+Distill}（本文消融）：ID 嵌入 + LLM 语义投影 + 热→冷协同知识蒸馏
-    \item \textbf{+Full}（本文消融）：+HardBPR-W + 语义硬负采样
+    \item \textbf{LightGCN/MF/NGCF}：标准 BPR 训练（随机负采样 + 均匀加权）
+    \item \textbf{+HardBPR（本文）}：同一模型架构 + 语义感知 BPR 加权
+    \item \textbf{+HardBPR-M（消融）}：语义边际 BPR
+    \item \textbf{+Distill（消融）}：热$\to$冷协同知识蒸馏
+    \item \textbf{+Full（消融）}：HardBPR-W + 语义硬负采样
 \end{itemize}
 
 \subsection{整体结果}

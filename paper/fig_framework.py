@@ -32,32 +32,32 @@ def add_arrow(x1, y1, x2, y2, color='black', text='', fs=8):
         mx, my = (x1+x2)/2, (y1+y2)/2
         ax.text(mx, my+0.1, text, ha='center', va='bottom', fontsize=fs, color=color)
 
-# Row 1: Feature Layer
-add_box(2, 2.5, 2.2, 0.8, 'ID Embedding\n(random, trainable)', blue, 8)
-add_box(4.7, 2.5, 2.2, 0.8, 'LLM Semantic Emb\n(frozen, 1536-dim)', gray, 8)
-add_box(7.4, 2.5, 1.5, 0.8, 'Projection\nLinear(1536,64)', green, 8)
-add_arrow(3.1, 2.5, 3.6, 2.5, 'black')
-add_arrow(5.8, 2.5, 6.65, 2.5, 'black')
+# Row 1: Feature Layer (standard LightGCN - NO LLM)
+add_box(4.5, 2.5, 4.0, 0.8, 'ID Embedding\n(random init, trainable)', blue, 8)
 
 # Row 2: Graph Propagation
-add_box(4.5, 1.4, 5.5, 0.8,
-        'Graph Propagation: E = mean(E0 + E1 + E2 + E3)\nLightGCN K=3 layers, sparse.mm', blue, 8)
+add_box(4.5, 1.4, 6.0, 0.8,
+        'Graph Propagation: E = mean(E0 + ... + EK)\nLightGCN K=3 layers, standard sparse.mm', blue, 8)
+add_arrow(4.5, 2.1, 4.5, 1.8, 'black')
 
-add_arrow(2, 2.1, 3, 1.8, 'black')
-add_arrow(7.4, 2.1, 6.5, 1.8, 'black')
+# Row 3: BPR Prediction
+add_box(1.8, 0.4, 2.5, 0.7, 'BPR Forward\npos_score, neg_score', green, 8)
 
-# Row 3: BPR Loss
-add_box(4.5, 0.4, 5.5, 0.7,
-        'BPR Loss with Semantic Weighting\nloss = -(1 + beta*cos_sim) * log(sigma(pos-neg))', red, 8, bold=True)
+# Row 3: Semantic Weighting (side)
+add_box(6.5, 0.4, 3.5, 0.7,
+        'LLM Semantic Emb (frozen)\ncos_sim(pos, neg) -> weight', gray, 8)
+add_box(10.3, 0.4, 2.0, 0.7,
+        'loss = -(weight)\n* log sigma(pos-neg)', red, 8, bold=True)
+add_arrow(3.05, 0.4, 4.75, 0.4, 'black')
+add_arrow(8.25, 0.4, 9.3, 0.4, 'black')
+add_arrow(4.5, 1.0, 1.8, 0.75, 'black')
+add_arrow(4.5, 1.0, 6.5, 0.75, 'black')
 
-add_arrow(4.5, 1.0, 4.5, 0.75, 'black')
-
-# Highlight box
-rect = FancyBboxPatch((1.5, 0.0), 6.0, 0.1 + 0.7 + 0.1, boxstyle="round,pad=0.1",
+# Highlight
+rect = FancyBboxPatch((6.0, -0.05), 6.8, 0.9, boxstyle="round,pad=0.1",
                       facecolor='none', edgecolor=red, linewidth=2, linestyle='--')
 ax.add_patch(rect)
-ax.text(8.0, 0.4, 'OUR CONTRIBUTION', fontsize=9, fontweight='bold', color=red,
-        va='center')
+ax.text(9.4, 1.05, 'OUR CONTRIBUTION', fontsize=9, fontweight='bold', color=red, va='center')
 
 plt.tight_layout()
 plt.savefig('I:/claude_code文件/run_recmodels/paper/fig_framework.pdf',
