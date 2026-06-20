@@ -34,3 +34,12 @@ saved_models/*.pth
 # RLMRec raw data (large pickle files)
 data/rlmrec/
 data/google_data.zip
+
+# Amazon 10-core raw data (large, >100MB)
+data/amazon_10core/*.json.gz
+data/amazon_10core/*.pkl
+data/amazon_10core/*.npy
+data/amazon_10core/processed_10core/
+
+# ML-20M
+data/ml-20m/

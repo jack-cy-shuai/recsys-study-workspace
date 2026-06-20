@@ -42,6 +42,7 @@ from models.baselines.mf import MF, MF_HardBPR, MF_LLM, MF_LLM_HardBPR
 from models.baselines.ngcf import NGCF, NGCF_HardBPR
 from models.baselines.sgl import SGL, SGL_HardBPR, SGL_LLM, SGL_LLM_HardBPR
 from models.llm_enhanced.lightgcn_hardbpr import LightGCN_HardBPR
+from models.llm_enhanced.shi_hardbpr import Shi_HardBPR
 from models.llm_enhanced.lightgcn_llm import LightGCN_LLM
 from models.llm_enhanced.lightgcn_llm_distill import LightGCN_LLM_Distill
 from models.llm_enhanced.lightgcn_llm_hardbpr import LightGCN_LLM_HardBPR
@@ -167,6 +168,10 @@ def build_model(
             llm_item_emb=llm_data.llm_item_emb,
             freeze_llm=config.get("model", {}).get("freeze_llm", True),
         )
+
+    # Shi Hard-BPR
+    elif model_name == "Shi_HardBPR":
+        return Shi_HardBPR(num_users, num_items, model_cfg, norm_adj)
 
     # NGCF variants
     elif model_name == "NGCF":

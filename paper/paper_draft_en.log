@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.6)  13 JUN 2026 11:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.6)  13 JUN 2026 11:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -410,18 +410,18 @@ Overfull \hbox (2.5159pt too wide) in paragraph at lines 80--81
  []
 
 [3]
-<fig_gradient.pdf, id=147, 715.4611pt x 278.82857pt>
+<fig_gradient.pdf, id=147, 715.4611pt x 297.90549pt>
 File: fig_gradient.pdf Graphic file (type pdf)
 <use fig_gradient.pdf>
 Package pdftex.def Info: fig_gradient.pdf  used on input line 120.
-(pdftex.def)             Requested size: 432.48051pt x 168.54927pt.
+(pdftex.def)             Requested size: 432.48051pt x 180.08109pt.
  [4
 pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.138 \begin{equation}
-                       <./fig_gradient.pdf>]
-<fig_framework.pdf, id=220, 860.01299pt x 245.718pt>
+l.137 S
+       emantically similar negatives (higher $\text{sim}_{ij}$) are harder t... <./fig_gradient.pdf>]
+<fig_framework.pdf, id=218, 860.01299pt x 245.718pt>
 File: fig_framework.pdf Graphic file (type pdf)
 <use fig_framework.pdf>
 Package pdftex.def Info: fig_framework.pdf  used on input line 159.
@@ -435,27 +435,27 @@ l.173 \end{equation}
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.268 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.268 
+l.270 
       ]
 Overfull \hbox (1.40062pt too wide) in paragraph at lines 290--291
 \OT1/cmr/m/n/10.95 To ver-ify gen-er-al-ity, we eval-u-ate HardBPR on two ad-di-tional back-bones from dif-fer-ent paradigms:
  []
 
 [8
+pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.293 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{table.3}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.312 
+l.293 
       
 pdfTeX warning (ext4): destination with the same identifier (name{table.4}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.312 
+l.293 
       ]
 <fig_coldhot.pdf, id=344, 566.47554pt x 317.10318pt>
 File: fig_coldhot.pdf Graphic file (type pdf)
@@ -466,35 +466,39 @@ Package pdftex.def Info: fig_coldhot.pdf  used on input line 315.
 pdfTeX warning (ext4): destination with the same identifier (name{table.5}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.330     \item F
-                 or models already saturating BPR optimization (e.g., NGCF),...
+l.325 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.330     \item F
-                 or models already saturating BPR optimization (e.g., NGCF),... <./fig_coldhot.pdf>]
+l.325 
+       <./fig_coldhot.pdf>] [10]
 Underfull \hbox (badness 1371) in paragraph at lines 394--397
 []\OT1/cmr/m/n/10.95 N. Tishby, F. C. Pereira, and W. Bialek.  The in-for-ma-tion bot-tle-neck method.
  []
 
-[10] [11] (paper_draft_en.aux)
+[11] (paper_draft_en.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `paper_draft_en.out' has not changed.
 (rerunfilecheck)             Checksum: 27799D720594EDCCFCC24E03B1715047;3112.
  ) 
 Here is how much of TeX's memory you used:
  11401 strings out of 467871
  174157 string characters out of 5418377
- 596263 words of memory out of 5000000
+ 597263 words of memory out of 5000000
  40034 multiletter control sequences out of 15000+600000
  645027 words of font info for 102 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,1426b,600s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,1482b,586s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\89257\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1095.pk> <C:\Users\89257\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0600.pk> <C:\Users\89257\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0800.pk><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/89257/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on paper_draft_en.pdf (11 pages, 320837 bytes).
+Output written on paper_draft_en.pdf (11 pages, 320655 bytes).
 PDF statistics:
  506 PDF objects out of 1000 (max. 8388607)
  71 named destinations out of 1000 (max. 500000)

@@ -1,0 +1,25 @@
+{
+  "dataset": {
+    "name": "ML-1M",
+    "users": 6040,
+    "items": 3706,
+    "train": 988129,
+    "val": 6040,
+    "test": 6040,
+    "density": 4.414396021486546,
+    "llm_dim": 384,
+    "llm_source": "self-generated (all-MiniLM-L6-v2, mean pooling)"
+  },
+  "LightGCN": {
+    "R@10": 0.0361,
+    "R@20": 0.0692,
+    "N@20": 0.026,
+    "R@50": 0.1377
+  },
+  "HardBPR": {
+    "R@10": 0.0368,
+    "R@20": 0.07,
+    "N@20": 0.0262,
+    "R@50": 0.1364
+  }
+}
