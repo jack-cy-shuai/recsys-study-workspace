@@ -132,7 +132,7 @@ For each positive-negative pair $(i,j)$, compute their cosine similarity in the 
 \begin{equation}
     \text{sim}_{ij} = \frac{\mathbf{s}_i^{\top} \mathbf{s}_j}{\|\mathbf{s}_i\| \cdot \|\mathbf{s}_j\|}
 \end{equation}
-where $\mathbf{s}_i, \mathbf{s}_j$ are the frozen LLM semantic embeddings of items $i$ and $j$, respectively.
+where $\mathbf{s}_i, \mathbf{s}_j$ are the frozen LLM semantic embeddings of items $i$ and $j$, respectively. In our experiments, these embeddings come from RLMRec's pre-computed 1536-dimensional vectors (encoded via text-embedding-ada-002) for the main datasets, and from self-generated 384-dimensional vectors (encoded via all-MiniLM-L6-v2 with mean pooling) for the ML-1M cross-benchmark. The method is agnostic to the embedding source---any frozen semantic representation can be used.
 
 Semantically similar negatives (higher $\text{sim}_{ij}$) are harder to distinguish and should receive higher training weights:
 \begin{equation}
@@ -200,13 +200,13 @@ This yields a concise design principle:
         \toprule
         Dataset & \#Users & \#Items & \#Train & Density \\
         \midrule
-        Amazon-Book & 11,000 & 9,332 & 120,464 & 0.12\% \\
-        Steam & 23,310 & 5,237 & 316,190 & 0.26\% \\
-        Yelp & 11,091 & 11,010 & 166,620 & 0.14\% \\
+        Amazon-Book\textsuperscript{*} & 11,000 & 9,332 & 120,464 & 0.12\% \\
+        Steam\textsuperscript{*} & 23,310 & 5,237 & 316,190 & 0.26\% \\
+        Yelp\textsuperscript{*} & 11,091 & 11,010 & 166,620 & 0.14\% \\
         ML-1M\textsuperscript{$\dagger$} & 6,040 & 3,706 & 988,129 & 4.41\% \\
         \bottomrule
     \end{tabular}\\[4pt]
-    \footnotesize{\textsuperscript{$\dagger$}Self-generated LLM embeddings (384-dim, all-MiniLM-L6-v2).}
+    \footnotesize{\textsuperscript{*}Pre-computed LLM embeddings from RLMRec (1536-dim, text-embedding-ada-002). \textsuperscript{$\dagger$}Self-generated LLM embeddings (384-dim, all-MiniLM-L6-v2 with mean pooling).}
     \end{tabular}
 \end{table}
 
@@ -229,7 +229,7 @@ Table~\ref{tab:main} presents the test-set comparison on LightGCN across three d
 
 \begin{table}[ht]
     \centering
-    \caption{LightGCN results across three datasets: standard BPR vs.\ HardBPR.}
+    \caption{LightGCN results on three RLMRec datasets (pre-computed 1536-dim embeddings).}
     \label{tab:main}
     \begin{tabular}{lrrrrr}
         \toprule
@@ -275,7 +275,7 @@ We also explore two auxiliary enhancements: hot-to-cold collaborative distillati
 
 \begin{table}[ht]
     \centering
-    \caption{Ablation results on Amazon-Book.}
+    \caption{Ablation results on Amazon-Book (RLMRec pre-computed embeddings).}
     \label{tab:ablation}
     \begin{tabular}{lrr}
         \toprule
