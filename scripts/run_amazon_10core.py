@@ -34,9 +34,7 @@ config = {'embedding_dim':64, 'num_layers':3, 'lr':0.001, 'weight_decay':0.0001,
 bs = 512
 
 def b_eval(model, pairs, ks):
-    users = sorted({u for u,_ in pairs})
-    def sf(uid): return model.get_user_embeddings()[uid] @ model.get_item_embeddings().T
-    return evaluate_model_batched(sf, users, pairs, d['train_user_items'], ks, batch_size=bs, device='cuda')
+    return evaluate_model_batched(model, pairs, d['train_user_items'], ks, eval_batch_size=bs)
 
 results = {}
 for label, cls, kwargs in [

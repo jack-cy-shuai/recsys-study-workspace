@@ -54,7 +54,7 @@ Our contributions are as follows:
     \item We propose \emph{HardBPR}, a training-time enhancement that modifies only the loss function with zero additional parameters. Frozen LLM semantic embeddings are used to compute the pairwise semantic similarity between positive and negative samples, and harder samples receive proportionally higher loss weights.
     \item We design two semantic-aware mechanisms: \emph{Weighted HardBPR} (amplifying loss weights for hard samples) and \emph{Margin HardBPR} (imposing stricter ranking margins), and experimentally verify that the weighted variant is superior.
     \item Through ablation studies on auxiliary enhancements---hot-to-cold collaborative distillation and semantic hard negative sampling---we discover that the former yields marginal gains while the latter is actually harmful, establishing that \emph{the optimal injection point for semantic signals is the loss level, not the data level}.
-    \item We validate HardBPR across three datasets and three backbone architectures, demonstrating consistent improvements and providing an Information Bottleneck analysis that explains \emph{why} loss-level semantic injection works while data-level injection does not.
+    \item We validate HardBPR across three datasets and three backbone architectures, demonstrating consistent improvements. We further validate on MovieLens-1M with \emph{self-generated} LLM embeddings and provide an Information Bottleneck analysis explaining \emph{why} loss-level semantic injection works while data-level injection does not.
 \end{enumerate}
 
 % ============================================================
@@ -203,10 +203,10 @@ This yields a concise design principle:
         Amazon-Book & 11,000 & 9,332 & 120,464 & 0.12\% \\
         Steam & 23,310 & 5,237 & 316,190 & 0.26\% \\
         Yelp & 11,091 & 11,010 & 166,620 & 0.14\% \\
-        ML-1M\textsuperscript{*} & 6,040 & 3,706 & 988,129 & 4.41\% \\
+        ML-1M\textsuperscript{$\dagger$} & 6,040 & 3,706 & 988,129 & 4.41\% \\
         \bottomrule
     \end{tabular}\\[4pt]
-    \footnotesize{\textsuperscript{*}Self-generated LLM embeddings.}
+    \footnotesize{\textsuperscript{$\dagger$}Self-generated LLM embeddings (384-dim, all-MiniLM-L6-v2).}
     \end{tabular}
 \end{table}
 
@@ -358,7 +358,7 @@ Experiments on three public datasets validate the effectiveness of our method:
 
 Ablation studies reveal a counterintuitive finding: semantic hard negative sampling (data-level injection) is actually detrimental. Through the Information Bottleneck framework, we provide a theoretical explanation: data-level semantic injection disrupts the coarse-grained compression structure of BPR training, while loss-level semantic reweighting preserves this structure and uses semantic information as a supplementary focusing mechanism.
 
-Future work will explore HardBPR on larger-scale datasets and investigate adaptive $\beta$ scheduling strategies.
+Future work will explore HardBPR on larger-scale datasets---we have processed the full 10-core Amazon-Book (160K users $\times$ 131K items) with self-generated embeddings and release the pipeline for community benchmarking---and investigate adaptive $\beta$ scheduling strategies.
 
 % ============================================================
 % References
