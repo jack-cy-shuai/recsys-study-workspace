@@ -1,0 +1,185 @@
+% !TEX program = xelatex
+\documentclass[11pt,aspectratio=169]{beamer}
+\usepackage{ctex}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+\definecolor{myblue}{RGB}{68,114,196}
+\definecolor{myred}{RGB}{192,0,0}
+\definecolor{myorange}{RGB}{237,125,49}
+
+\title{HardBPR: Semantic-Aware BPR Training}
+\author{Zhaoyang Zhang}
+\date{}
+
+\begin{document}
+
+% ============================================================
+\section{Part 1}
+\begin{frame}{LLM 增强推荐系统：从特征注入到训练优化}
+\framesubtitle{调研覆盖：20+ 篇顶会论文}
+
+\vspace{-3mm}
+
+% Left: four routes
+\begin{columns}[T]
+\begin{column}{0.58\textwidth}
+\textbf{四条主流技术路线}
+
+\vspace{2mm}
+\begin{tabular}{lp{1.8cm}p{2.8cm}}
+\toprule
+路线 & 代表工作 & 核心思想 \\
+\midrule
+特征层 & RLMRec, LLMInit, RecMind, DALR & 语义对齐/初始化/门控融合 \\
+\rowcolor{gray!10}
+结构层 & TAGCF & LLM推理属性 $\to$ 三部图 \\
+Token对齐 & TCA4Rec, CoLLM & CF信号 $\to$ LLM token空间 \\
+\rowcolor{myblue!10}
+\textbf{损失层} & \textbf{HardBPR (本文)} & \textbf{语义 $\to$ BPR重加权} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+\textbf{调研发现}
+
+\small
+$\bullet$ 所有特征层/结构层/Token层方法共用同一个训练范式：\\ 标准 BPR + 随机负采样
+
+$\bullet$ 训练信号的样本效率是独立于架构设计的瓶颈
+\end{column}
+
+% Right: tech tree
+\begin{column}{0.38\textwidth}
+\small
+\textbf{技术演进}
+
+\vspace{2mm}
+\begin{tikzpicture}[scale=0.85,>=stealth]
+\node[draw,fill=gray!10,rounded corners] (tr) at (0,2.8) {传统CF};
+\node[draw,fill=gray!10,rounded corners] (mf) at (0,2.1) {MF};
+\node[draw,fill=gray!10,rounded corners] (bpr) at (0,1.4) {BPR};
+\node[draw,fill=gray!10,rounded corners] (lgc) at (0,0.7) {LightGCN};
+
+\node[draw,fill=myblue!10,rounded corners] (rlm) at (3,2.8) {RLMRec};
+\node[draw,fill=myblue!10,rounded corners] (llm) at (3,2.1) {LLMInit};
+\node[draw,fill=myblue!10,rounded corners] (dalr) at (3,1.4) {DALR};
+\node[draw,fill=myblue!10,rounded corners] (tag) at (3,0.7) {TAGCF};
+\node[draw,fill=myred!10,rounded corners] (tca) at (3,0.0) {TCA4Rec};
+
+\node[draw,fill=myorange!10,rounded corners,font=\bfseries] (hb) at (5,1.4) {HardBPR};
+
+\draw[->] (mf) -- (bpr); \draw[->] (bpr) -- (lgc);
+\draw[->,dashed] (lgc) -- (rlm);
+\draw[->] (rlm) -- (llm); \draw[->] (llm) -- (dalr);
+\draw[->] (dalr) -- (tag); \draw[->] (tag) -- (tca);
+\draw[->,line width=1.2pt,myorange] (3.2,1.4) -- (hb);
+
+\node[font=\tiny] at (4.8,0.0) {损失层};
+\end{tikzpicture}
+
+\vspace{2mm}
+\scriptsize
+\textbf{传统基础：} MF (Koren'09) $\to$ BPR (Rendle'09) $\to$ NCF (He'17) $\to$ LightGCN (He'20)
+
+\textbf{LLM增强：} RLMRec (WWW'24) $\to$ LLMInit (EMNLP'25) $\to$ RecMind / DALR / RecGOAT / TAGCF / TCA4Rec
+\end{column}
+\end{columns}
+
+\vfill
+\tiny 文献综述：\texttt{docs/survey\_llm\_embedding\_for\_cf.md} \quad 论文代码：\texttt{github.com/jack-cy-shuai/recsys-study-workspace}
+
+\end{frame}
+
+% ============================================================
+\section{Part 2}
+\begin{frame}{HardBPR：不改模型，只改损失}
+\framesubtitle{零参数 $\cdot$ 零推理开销 $\cdot$ 模型无关 $\cdot$ embedding来源无关}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\textbf{方法}
+
+\vspace{2mm}
+\small
+标准 BPR：
+$$\mathcal{L}_{\text{BPR}} = -\frac{1}{|\mathcal{D}|}\sum_{(u,i,j)}\ln\sigma(\hat{y}_{ui}-\hat{y}_{uj})$$
+
+\vspace{1mm}
+\textbf{HardBPR (本文)}：
+$$\mathcal{L}_{\text{HB}} = -\frac{1}{|\mathcal{D}|}\sum_{(u,i,j)} \!\!\!\underbrace{(1 + \beta\!\cdot\!\text{cos}(\mathbf{s}_i,\mathbf{s}_j))}_{w_{ij}}\!\!\! \cdot \ln\sigma(\hat{y}_{ui}-\hat{y}_{uj})$$
+
+\vspace{2mm}
+\begin{itemize}
+\setlength\itemsep{3pt}
+\item $\mathbf{s}_i$, $\mathbf{s}_j$：冻结的 LLM/语义物品向量
+\item $\beta=0.5$：语义权重；$\text{cos}$高 $\to$ 困难样本 $\to$ 更高权重
+\item \textbf{不改前向传播}，与标准 LightGCN 完全相同
+\item \textbf{不加参数}，LLM仅用于离线 loss 计算
+\item 适用于任何 frozen 语义嵌入（RLMRec / MiniLM / ...）
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Information Bottleneck 解释}
+
+\scriptsize
+损失层加权 $\to$ 保持压缩结构 + 聚焦困难样本 \\
+数据层硬负采样 $\to$ 破坏压缩结构 $\to$ 性能退化 (0.0397 $\to$ 0.0289)
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textbf{主表：LightGCN $\times$ 3 datasets}
+
+\vspace{2mm}
+\footnotesize
+\begin{tabular}{lrrrr}
+\toprule
+数据集 & 密度 & 标准BPR & HardBPR & 提升 \\
+\midrule
+Amazon & 0.12\% & 0.0267 & \textbf{0.0397} & +48.7\% \\
+Steam & 0.26\% & 0.0617 & \textbf{0.0893} & +44.7\% \\
+Yelp & 0.14\% & 0.0176 & \textbf{0.0354} & +101.1\% \\
+\midrule
+ML-1M\textsuperscript{$\dagger$} & 4.41\% & 0.0692 & \textbf{0.0700} & +1.2\% \\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+
+{\tiny \textsuperscript{$\dagger$}自建embedding (all-MiniLM-L6-v2, 384-dim)}
+
+\vspace{3mm}
+\textbf{消融 (Amazon)}
+
+\vspace{2mm}
+\footnotesize
+\begin{tabular}{lrr}
+\toprule
+方法 & R@20 & 说明 \\
+\midrule
+\textbf{HardBPR-Weight (本文)} & \textbf{0.0397} & 语义加权 \\
+HardBPR-Margin & 0.0283 & 语义边际 \\
+Shi-HardBPR~\cite{Shi2024HardBPR} & 0.0267 & 内部梯度塑形 \\
++Hard Neg Sampling & 0.0289 & 数据层有害 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2mm}
+\footnotesize
+\textbf{模型无关}：MF (+13.0\%) $|$ LightGCN (+48.7\%) $|$ NGCF (持平)
+\end{column}
+\end{columns}
+
+\vfill
+\tiny 代码 \& 全部实验日志：\texttt{github.com/jack-cy-shuai/recsys-study-workspace}
+
+\end{frame}
+
+\end{document}
